@@ -1,0 +1,31 @@
+language: node_js
+
+os: linux
+
+cache:
+  directories:
+    - node_modules
+
+jobs:
+  include:
+    - name: Functional tests
+      script: test/functional.sh
+      node_js: 12
+      cache:
+        directories:
+          - node_modules
+          - terser-functional-tests
+
+    - node_js: 14
+      env:
+        - TERSER_TEST_ALL=1
+      cache:
+        directories:
+          - node_modules
+          - tmp
+
+    - node_js: 10
+
+    - node_js: 14
+      os: windows
+
