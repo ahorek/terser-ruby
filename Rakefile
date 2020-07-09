@@ -57,11 +57,8 @@ namespace :terser do
       `npm install --no-package-lock --no-save`
     end
 
-    FileUtils.cp("vendor/source-map/dist/source-map.js", "lib/source-map.js")
+    FileUtils.cp("vendor/source-map/dist/source-map.min.js", "lib/source-map.js")
     FileUtils.cp("vendor/terser/dist/bundle.min.js", "lib/terser.js")
-
-    source = `node ./vendor/terser/bin/terser lib/source-map.js` # minify sourcemaps
-    File.write("lib/source-map.js", source)
 
     FileUtils.cp("vendor/split/split.js", "lib/split.js")
     `patch -p1 -i patches/es5-string-split.patch`
