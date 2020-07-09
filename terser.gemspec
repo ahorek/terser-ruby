@@ -1,4 +1,6 @@
 # coding: utf-8
+# frozen_string_literal: true
+
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'terser/version'
@@ -10,7 +12,8 @@ Gem::Specification.new do |spec|
   spec.email = ["lautis@gmail.com"]
   spec.homepage = "http://github.com/ahorek/terser-ruby"
   spec.summary = "Ruby wrapper for Terser JavaScript compressor"
-  spec.description = "Terser minifies JavaScript files by wrapping TerserJS to be accessible in Ruby"
+  spec.description = "Terser minifies JavaScript files by wrapping \
+    TerserJS to be accessible in Ruby"
   spec.license = "MIT"
 
   spec.required_ruby_version = '>= 2.3.0'
@@ -28,8 +31,8 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_runtime_dependency "execjs", [">= 0.3.0", "< 3"]
-  spec.add_development_dependency "rspec", "~> 3.0"
-  spec.add_development_dependency "rake", "~> 12.0"
   spec.add_development_dependency "bundler", ">= 1.3"
+  spec.add_development_dependency "rake", "~> 12.0"
+  spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "sourcemap", "~> 0.1.1"
 end

@@ -1,4 +1,5 @@
 # encoding: UTF-8
+# frozen_string_literal: true
 
 require "json"
 require "base64"
@@ -23,7 +24,7 @@ class Terser
 
   # Default options for compilation
   DEFAULTS = {
-    # rubocop:disable LineLength
+    # rubocop:disable Layout/LineLength
     :output => {
       :ascii_only => true, # Escape non-ASCII characterss
       :comments => :copyright, # Preserve comments (:all, :jsdoc, :copyright, :none)
@@ -45,7 +46,7 @@ class Terser
       :eval => false, # Mangle names when eval of when is used in scope
       :reserved => ["$super"], # Argument names to be excluded from mangling
       :properties => false, # Mangle property names
-      :toplevel => false, # Mangle names declared in the toplevel scope
+      :toplevel => false # Mangle names declared in the toplevel scope
     }, # Mangle variable and function names, set to false to skip mangling
     :compress => {
       :sequences => true, # Allow statements to be joined by commas
@@ -80,7 +81,7 @@ class Terser
       :passes => 1, # Number of times to run compress. Raising the number of passes will increase compress time, but can produce slightly smaller code.
       :keep_infinity => false, # Prevent compression of Infinity to 1/0
       :side_effects => true, # Pass false to disable potentially dropping functions marked as "pure" using pure comment annotation. See TerserJS documentation for details.
-      :switches => true, # de-duplicate and remove unreachable switch branches
+      :switches => true # de-duplicate and remove unreachable switch branches
     }, # Apply transformations to code, set to false to skip
     :parse => {
       :bare_returns => false, # Allow top-level return statements.
@@ -103,7 +104,7 @@ class Terser
     :regex => nil, # A regular expression to filter property names to be mangled
     :keep_quoted => false, # Keep quoted property names
     :reserved => [], # List of properties that should not be mangled
-    :builtins => false, # Mangle properties that overlap with standard JS globals
+    :builtins => false # Mangle properties that overlap with standard JS globals
   }
 
   SOURCE_MAP_DEFAULTS = {
@@ -116,7 +117,7 @@ class Terser
     :input_source_map => nil # The contents of the source map describing the input
   }
 
-  # rubocop:enable LineLength
+  # rubocop:enable Layout/LineLength
 
   # Minifies JavaScript code using implicit context.
   #
@@ -267,9 +268,7 @@ class Terser
   end
 
   def parse_result(result, generate_map, options)
-    if result.has_key?('error')
-      raise Error, error_message(result, options)
-    end
+    raise Error, error_message(result, options) if result.has_key?('error')
 
     if generate_map
       [result['code'] + source_map_comments, result['map']]
@@ -383,7 +382,7 @@ class Terser
 
   def output_options
     DEFAULTS[:output].merge(@options[:output] || {})
-      .merge(:comments => comment_options, :quote_style => quote_style)
+                     .merge(:comments => comment_options, :quote_style => quote_style)
   end
 
   def keep_fnames?(type)
@@ -476,6 +475,7 @@ class Terser
 
   def input_source_map(source, generate_map)
     return nil unless generate_map
+
     source_map_options = @options[:source_map].is_a?(Hash) ? @options[:source_map] : {}
     sanitize_map_root(source_map_options.fetch(:input_source_map) do
       url = extract_source_mapping_url(source)

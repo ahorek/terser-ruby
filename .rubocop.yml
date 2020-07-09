@@ -1,5 +1,6 @@
 AllCops:
   DisplayCopNames: true
+  TargetRubyVersion: 2.3
   Exclude:
     - uglifier.gemspec
     - lib/uglifier/version.rb
@@ -17,7 +18,7 @@ Metrics/BlockLength:
 Metrics/ClassLength:
   Enabled: false
 
-Metrics/LineLength:
+Layout/LineLength:
   Max: 100
 
 Metrics/MethodLength:
@@ -52,3 +53,19 @@ Style/MutableConstant:
 
 Style/ExpandPathArguments:
   Enabled: false
+
+Lint/RaiseException:
+  Enabled: true
+  
+Lint/StructNewOverride:
+  Enabled: true
+  
+Style/HashEachMethods:
+  Enabled: true
+
+Style/HashTransformKeys:
+  Enabled: true
+
+Style/HashTransformValues:
+  Enabled: true
+  

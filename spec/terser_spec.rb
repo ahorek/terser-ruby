@@ -1,4 +1,5 @@
 # encoding: UTF-8
+# frozen_string_literal: true
 
 require 'stringio'
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
@@ -29,48 +30,48 @@ describe "Terser" do
     expect(Terser.new.compile('var foo="\0bar"')).to include("\\0bar")
   end
 
-# TODO fixme
-#  describe "property name mangling" do
-#    let(:source) do
-#      <<-JS
-#       var obj = {
-#          _hidden: false,
-#          "quoted": 'value'
-#        };
-#
-#        alert(object.quoted);
-#      JS
-#    end
-#
-#    it "does not mangle property names by default" do
-#      expect(Terser.compile(source)).to include("object.quoted")
-#    end
-#
-#    it "can be configured to mangle properties" do
-#      expect(Terser.compile(source, :mangle => { :properties => true }))
-#        .not_to include("object.quoted")
-#    end
-#
-#    it "can be configured using old mangle_properties" do
-#      expect(Terser.compile(source, :mangle_properties => true))
-#        .not_to include("object.quoted")
-#    end
-#
-#    it "can configure a regex for mangling" do
-#      expect(Terser.compile(source, :mangle => { :properties => { :regex => /^_/ } }))
-#        .to include("object.quoted")
-#    end
-#
-#    it "can be configured to keep quoted properties" do
-#      expect(Terser.compile(source, :mangle => { :properties => { :keep_quoted => true } }))
-#        .to include("object.quoted")
-#    end
-#
-#    it "can be configured to include debug in mangled properties" do
-#      expect(Terser.compile(source, :mangle => { :properties => { :debug => true } }))
-#        .to include("_$quoted$_")
-#    end
-#  end
+  # TODO: fixme
+  #  describe "property name mangling" do
+  #    let(:source) do
+  #      <<-JS
+  #       var obj = {
+  #          _hidden: false,
+  #          "quoted": 'value'
+  #        };
+  #
+  #        alert(object.quoted);
+  #      JS
+  #    end
+  #
+  #    it "does not mangle property names by default" do
+  #      expect(Terser.compile(source)).to include("object.quoted")
+  #    end
+  #
+  #    it "can be configured to mangle properties" do
+  #      expect(Terser.compile(source, :mangle => { :properties => true }))
+  #        .not_to include("object.quoted")
+  #    end
+  #
+  #    it "can be configured using old mangle_properties" do
+  #      expect(Terser.compile(source, :mangle_properties => true))
+  #        .not_to include("object.quoted")
+  #    end
+  #
+  #    it "can configure a regex for mangling" do
+  #      expect(Terser.compile(source, :mangle => { :properties => { :regex => /^_/ } }))
+  #        .to include("object.quoted")
+  #    end
+  #
+  #    it "can be configured to keep quoted properties" do
+  #      expect(Terser.compile(source, :mangle => { :properties => { :keep_quoted => true } }))
+  #        .to include("object.quoted")
+  #    end
+  #
+  #    it "can be configured to include debug in mangled properties" do
+  #      expect(Terser.compile(source, :mangle => { :properties => { :debug => true } }))
+  #        .to include("_$quoted$_")
+  #    end
+  #  end
 
   describe "argument name mangling" do
     let(:code) { "function bar(foo) {return foo + 'bar'};" }
@@ -604,17 +605,17 @@ describe "Terser" do
 
     it 'compresses Infinity by default' do
       compiled = Terser.compile(code, :compress => {
-                                    :evaluate => true,
-                                    :keep_infinity => false
-                                  })
+                                  :evaluate => true,
+                                  :keep_infinity => false
+                                })
       expect(compiled).not_to include("Infinity")
     end
 
     it 'can be enabled to preserve Infinity' do
       compiled = Terser.compile(code, :compress => {
-                                    :evaluate => true,
-                                    :keep_infinity => true
-                                  })
+                                  :evaluate => true,
+                                  :keep_infinity => true
+                                })
       expect(compiled).to include("Infinity")
     end
   end

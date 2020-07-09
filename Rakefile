@@ -1,4 +1,5 @@
 # encoding: utf-8
+# frozen_string_literal: true
 
 require 'fileutils'
 require 'bundler/gem_tasks'
@@ -79,7 +80,7 @@ namespace :terser do
     files = [
       'CHANGELOG.md',
       'lib/terser.js',
-      'vendor/terser',
+      'vendor/terser'
     ]
     git_commit(files, "Update Terser to #{version}")
   end
