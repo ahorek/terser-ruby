@@ -186,10 +186,7 @@ class Terser
     return '' unless @options[:source_map].respond_to?(:[])
 
     suffix = ''
-    if @options[:source_map][:map_url]
-      suffix += "\n//# sourceMappingURL=" + @options[:source_map][:map_url]
-    end
-
+    suffix += "\n//# sourceMappingURL=" + @options[:source_map][:map_url] if @options[:source_map][:map_url]
     suffix += "\n//# sourceURL=" + @options[:source_map][:url] if @options[:source_map][:url]
     suffix
   end

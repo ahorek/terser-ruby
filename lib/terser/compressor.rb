@@ -3,8 +3,8 @@
 require 'sprockets/digest_utils'
 require 'sprockets/source_map_utils' if Gem::Version.new(::Sprockets::VERSION) >= Gem::Version.new('4.x')
 
-# A wrapper for Sprockets
 class Terser
+  # A wrapper for Sprockets
   class Compressor
     VERSION = '1'
 
