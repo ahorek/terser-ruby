@@ -8,8 +8,8 @@ require 'terser/version'
 Gem::Specification.new do |spec|
   spec.name = "terser"
   spec.version = Terser::VERSION
-  spec.authors = ["Ville Lautanala"]
-  spec.email = ["lautis@gmail.com"]
+  spec.authors = ["Pavel Rosicky"]
+  spec.email = ["pdahorek@seznam.cz"]
   spec.homepage = "http://github.com/ahorek/terser-ruby"
   spec.summary = "Ruby wrapper for Terser JavaScript compressor"
   spec.description = "Terser minifies JavaScript files by wrapping \
