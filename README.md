@@ -14,7 +14,10 @@ ES6 support
 When used in Rails, replace
 
 ```ruby
-config.assets.js_compressor = :terser
+Sprockets.register_compressor 'application/javascript', :terser, Terser::Compressor
+Rails.application.configure do
+  config.assets.js_compressor = :terser
+end
 ```
 in `config/environments/production.rb`.
 

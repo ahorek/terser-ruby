@@ -1,5 +1,6 @@
 ## 1.0.0 (09 July 2020)
 
+- add sprockets wrapper
 - drop Ruby < 2.3.0 support
 - drop ES5 mode
 - drop IE8 mode

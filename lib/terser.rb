@@ -8,6 +8,8 @@ require "terser/version"
 
 # A wrapper around the Terser interface
 class Terser
+  autoload :Compressor, 'terser/compressor'
+
   # Error class for compilation errors.
   class Error < StandardError; end
 
