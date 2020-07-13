@@ -180,6 +180,13 @@ class Terser
       source = source_with(SourcePath)
       ExecJS.compile(source)
     end
+  rescue ExecJS::RuntimeError, ExecJS::ProgramError => e
+    cause = e.cause.to_s
+    if cause.include?("missing ; before statement") || cause.include?("Unexpected reserved word")
+      raise Error, "Please use a runtime compatible with ECMA6 syntax, the current runtime is #{ExecJS::Runtimes.autodetect.name}"
+    end
+
+    raise e
   end
 
   def source_map_comments

@@ -1,9 +1,11 @@
-## 1.0.0 (09 July 2020)
+## Unreleased
 
+## 1.0.0 (13 July 2020)
 - add sprockets wrapper
 - drop Ruby < 2.3.0 support
 - drop ES5 mode
 - drop IE8 mode
+- drop unsupported runtimes (therubyracer, therubyrhino) because they don't support ECMA6
 - update tests and new options
 - update SourceMap to [0.6.1](https://github.com/mozilla/source-map/compare/0.5.7...0.6.1)
 - update TerserJS to [4.8.0]

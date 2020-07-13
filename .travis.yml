@@ -18,17 +18,9 @@ gemfile:
 matrix:
   include:
     - rvm: 2.5
-      gemfile: gemfiles/rubyracer
-    - rvm: 2.5
       gemfile: gemfiles/miniracer
-    - rvm: jruby-9.2.12.0
-      gemfile: gemfiles/rubyrhino
-    - rvm: jruby-head
-      gemfile: gemfiles/rubyrhino
   allow_failures:
     - rvm: ruby-head
     - rvm: truffleruby
     - rvm: jruby-head
-    - rvm: jruby-head
-      gemfile: gemfiles/rubyrhino
   fast_finish: true

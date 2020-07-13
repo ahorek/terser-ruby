@@ -5,6 +5,7 @@ AllCops:
     - uglifier.gemspec
     - lib/uglifier/version.rb
     - "vendor/**/*"
+    - "benchmark/*"
     - "gemfiles/vendor/**/*"
 
 Metrics/AbcSize:
