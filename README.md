@@ -7,7 +7,7 @@ a fork based on https://github.com/lautis/uglifier and https://github.com/mishoo
 
 ES6 support
 
-[![Build Status](https://travis-ci.org/ahorek/terser-ruby.svg?branch=master)](https://travis-ci.org/ahorek/terser-ruby)
+[![Build Status](https://api.travis-ci.com/ahorek/terser-ruby.svg?branch=master)](https://travis-ci.org/ahorek/terser-ruby)
 
 ### Rails
 
