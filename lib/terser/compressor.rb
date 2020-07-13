@@ -3,6 +3,7 @@
 require 'sprockets/digest_utils'
 require 'sprockets/source_map_utils' if Gem::Version.new(::Sprockets::VERSION) >= Gem::Version.new('4.x')
 
+# A wrapper for Sprockets
 class Terser
   class Compressor
     VERSION = '1'
@@ -29,15 +30,15 @@ class Terser
 
     if Gem::Version.new(::Sprockets::VERSION) >= Gem::Version.new('4.x')
       def call(input)
-        input_options = { source_map: { filename: input[:filename] } }
+        input_options = { :source_map => { :filename => input[:filename] } }
         terser = ::Terser.new(@options.merge(input_options))
 
         js, map = terser.compile_with_map(input[:data])
 
-        map = SourceMapUtils.format_source_map(JSON.parse(map), input)
-        map = SourceMapUtils.combine_source_maps(input[:metadata][:map], map)
+        map = ::Sprockets::SourceMapUtils.format_source_map(JSON.parse(map), input)
+        map = ::Sprockets::SourceMapUtils.combine_source_maps(input[:metadata][:map], map)
 
-        { data: js, map: map }
+        { :data => js, :map => map }
       end
     else
       def call(input)
