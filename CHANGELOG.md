@@ -1,4 +1,5 @@
 ## Unreleased
+- share the context in order to speedup sprockets compilation
 
 ## 1.0.0 (13 July 2020)
 - add sprockets wrapper

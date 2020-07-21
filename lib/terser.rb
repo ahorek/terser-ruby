@@ -152,10 +152,11 @@ class Terser
   # Minifies JavaScript code
   #
   # @param source [IO, String] valid JS source code.
+  # @param source_map_options [Hash] optional
   # @return [String] minified code.
-  def compile(source)
-    if @options[:source_map]
-      compiled, source_map = run_terserjs(source, true)
+  def compile(source, source_map_options = @options)
+    if source_map_options[:source_map]
+      compiled, source_map = run_terserjs(source, true, source_map_options)
       source_map_uri = Base64.strict_encode64(source_map)
       source_map_mime = "application/json;charset=utf-8;base64"
       compiled + "\n//# sourceMappingURL=data:#{source_map_mime},#{source_map_uri}"
@@ -168,9 +169,10 @@ class Terser
   # Minifies JavaScript code and generates a source map
   #
   # @param source [IO, String] valid JS source code.
+  # @param source_map_options [Hash] optional
   # @return [Array(String, String)] minified code and source map.
-  def compile_with_map(source)
-    run_terserjs(source, true)
+  def compile_with_map(source, source_map_options = @options)
+    run_terserjs(source, true, source_map_options)
   end
 
   private
@@ -189,12 +191,12 @@ class Terser
     raise e
   end
 
-  def source_map_comments
-    return '' unless @options[:source_map].respond_to?(:[])
+  def source_map_comments(source_map_options)
+    return '' unless source_map_options[:source_map].respond_to?(:[])
 
     suffix = ''
-    suffix += "\n//# sourceMappingURL=" + @options[:source_map][:map_url] if @options[:source_map][:map_url]
-    suffix += "\n//# sourceURL=" + @options[:source_map][:url] if @options[:source_map][:url]
+    suffix += "\n//# sourceMappingURL=" + source_map_options[:source_map][:map_url] if source_map_options[:source_map][:map_url]
+    suffix += "\n//# sourceURL=" + source_map_options[:source_map][:url] if source_map_options[:source_map][:url]
     suffix
   end
 
@@ -206,19 +208,19 @@ class Terser
   end
 
   # Run TerserJS for given source code
-  def run_terserjs(input, generate_map)
+  def run_terserjs(input, generate_map, source_map_options = {})
     source = read_source(input)
-    input_map = input_source_map(source, generate_map)
+    input_map = input_source_map(source, generate_map, source_map_options)
     options = {
       :source => source,
       :output => output_options,
       :compress => compressor_options,
       :mangle => mangle_options,
-      :parse => parse_options,
-      :sourceMap => source_map_options(input_map)
+      :parse => parse_options(source_map_options),
+      :sourceMap => source_map_options(input_map, source_map_options)
     }
 
-    parse_result(context.call("terser_wrapper", options), generate_map, options)
+    parse_result(context.call("terser_wrapper", options), generate_map, options, source_map_options)
   end
 
   def error_context_lines
@@ -273,13 +275,13 @@ class Terser
     "#{err['message']}\n#{src_ctx}"
   end
 
-  def parse_result(result, generate_map, options)
+  def parse_result(result, generate_map, options, source_map_options = {})
     raise Error, error_message(result, options) if result.has_key?('error')
 
     if generate_map
-      [result['code'] + source_map_comments, result['map']]
+      [result['code'] + source_map_comments(source_map_options), result['map']]
     else
-      result['code'] + source_map_comments
+      result['code'] + source_map_comments(source_map_options)
     end
   end
 
@@ -400,8 +402,8 @@ class Terser
     end
   end
 
-  def source_map_options(input_map)
-    options = conditional_option(@options[:source_map], SOURCE_MAP_DEFAULTS) || SOURCE_MAP_DEFAULTS
+  def source_map_options(input_map, source_map_options)
+    options = conditional_option(source_map_options[:source_map], SOURCE_MAP_DEFAULTS) || SOURCE_MAP_DEFAULTS
 
     {
       :input => options[:filename],
@@ -414,14 +416,14 @@ class Terser
     }
   end
 
-  def parse_options
+  def parse_options(source_map_options)
     conditional_option(@options[:parse], DEFAULTS[:parse])
-      .merge(parse_source_map_options)
+      .merge(parse_source_map_options(source_map_options))
   end
 
-  def parse_source_map_options
-    if @options[:source_map].respond_to?(:[])
-      { :filename => @options[:source_map][:filename] }
+  def parse_source_map_options(source_map_options)
+    if source_map_options[:source_map].respond_to?(:[])
+      { :filename => source_map_options[:source_map][:filename] }
     else
       {}
     end
@@ -479,10 +481,10 @@ class Terser
     match && match[1]
   end
 
-  def input_source_map(source, generate_map)
+  def input_source_map(source, generate_map, options)
     return nil unless generate_map
 
-    source_map_options = @options[:source_map].is_a?(Hash) ? @options[:source_map] : {}
+    source_map_options = options[:source_map].is_a?(Hash) ? options[:source_map] : {}
     sanitize_map_root(source_map_options.fetch(:input_source_map) do
       url = extract_source_mapping_url(source)
       Base64.strict_decode64(url.split(",", 2)[-1]) if url && url.start_with?("data:")

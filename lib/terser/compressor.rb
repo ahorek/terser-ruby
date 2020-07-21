@@ -12,6 +12,7 @@ class Terser
       options[:comments] ||= :none
       @options = options
       @cache_key = -"Terser:#{::Terser::VERSION}:#{VERSION}:#{::Sprockets::DigestUtils.digest(options)}"
+      @terser = ::Terser.new(@options)
     end
 
     def self.instance
@@ -31,9 +32,8 @@ class Terser
     if Gem::Version.new(::Sprockets::VERSION) >= Gem::Version.new('4.x')
       def call(input)
         input_options = { :source_map => { :filename => input[:filename] } }
-        terser = ::Terser.new(@options.merge(input_options))
 
-        js, map = terser.compile_with_map(input[:data])
+        js, map = @terser.compile_with_map(input[:data], input_options)
 
         map = ::Sprockets::SourceMapUtils.format_source_map(JSON.parse(map), input)
         map = ::Sprockets::SourceMapUtils.combine_source_maps(input[:metadata][:map], map)
@@ -42,8 +42,7 @@ class Terser
       end
     else
       def call(input)
-        terser = ::Terser.new(@options)
-        terser.compile(input[:data])
+        @terser.compile(input[:data])
       end
     end
   end
