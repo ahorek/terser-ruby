@@ -1,4 +1,6 @@
 ## Unreleased
+
+## 1.0.1 (02 August 2020)
 - share the context in order to speedup sprockets compilation
 
 ## 1.0.0 (13 July 2020)
