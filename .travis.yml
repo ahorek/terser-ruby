@@ -9,6 +9,7 @@ rvm:
   - jruby-head
   - jruby-9.2.12.0
   - truffleruby
+  - truffleruby-head
 before_install:
   - gem install bundler -v 1.17.3
 git:
@@ -23,4 +24,5 @@ matrix:
     - rvm: ruby-head
     - rvm: truffleruby
     - rvm: jruby-head
+    - rvm: truffleruby-head
   fast_finish: true
