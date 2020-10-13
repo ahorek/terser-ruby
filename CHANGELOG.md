@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.0.2 (13 October 2020)
+- LICENSE.txt encoding fix
+- update rubocop to 0.93.1
+
 ## 1.0.1 (02 August 2020)
 - share the context in order to speedup sprockets compilation
 
