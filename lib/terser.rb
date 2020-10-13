@@ -143,9 +143,9 @@ class Terser
   #
   # @param options [Hash] optional overrides to +Terser::DEFAULTS+
   def initialize(options = {})
-    (options.keys - DEFAULTS.keys - EXTRA_OPTIONS)[0..1].each do |missing|
-      raise ArgumentError, "Invalid option: #{missing}"
-    end
+    missing = options.keys - DEFAULTS.keys - EXTRA_OPTIONS
+    raise ArgumentError, "Invalid option: #{missing.first}" if missing.any?
+
     @options = options
   end
 
@@ -195,8 +195,8 @@ class Terser
     return '' unless source_map_options[:source_map].respond_to?(:[])
 
     suffix = ''
-    suffix += "\n//# sourceMappingURL=" + source_map_options[:source_map][:map_url] if source_map_options[:source_map][:map_url]
-    suffix += "\n//# sourceURL=" + source_map_options[:source_map][:url] if source_map_options[:source_map][:url]
+    suffix += "\n//# sourceMappingURL=#{source_map_options[:source_map][:map_url]}" if source_map_options[:source_map][:map_url]
+    suffix += "\n//# sourceURL=#{source_map_options[:source_map][:url]}" if source_map_options[:source_map][:url]
     suffix
   end
 
@@ -432,7 +432,7 @@ class Terser
   def enclose_options
     if @options[:enclose]
       @options[:enclose].map do |pair|
-        pair.first + ':' + pair.last
+        "#{pair.first}:#{pair.last}"
       end
     else
       false
