@@ -19,7 +19,7 @@ def changelog_tail
   if changelog.start_with?(HEADER)
     changelog[HEADER.length + 2..-1]
   else
-    "\n" + changelog
+    "\n#{changelog}"
   end
 end
 

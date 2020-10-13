@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 require 'stringio'
-require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
+require File.expand_path("#{File.dirname(__FILE__)}/spec_helper")
 
 describe "Terser" do
   it "minifies JS" do
@@ -294,7 +294,7 @@ describe "Terser" do
 
     it "does not reduce variables that are assigned to" do
       options = { :mangle => false, :compress => { :reduce_vars => true } }
-      expect(Terser.compile(code + "a=3", options)).to match(/console.log\(\w+-5\)/)
+      expect(Terser.compile("#{code}a=3", options)).to match(/console.log\(\w+-5\)/)
     end
   end
 

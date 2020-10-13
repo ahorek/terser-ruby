@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 require 'stringio'
-require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
+require File.expand_path("#{File.dirname(__FILE__)}/spec_helper")
 
 def expect_to_have_inline_source_map(minified, original)
   options = { :source_map => { :sources_content => true } }
