@@ -54,11 +54,16 @@ namespace :terser do
 
     cd 'vendor/terser/' do
       FileUtils.rm_rf("package-lock.json")
+      `patch -p1 -i ../../patches/terser-sync.patch`
+      `patch -p1 -i ../../patches/revert-source-maps.patch`
       `npm install --no-package-lock --no-save`
     end
 
     FileUtils.cp("vendor/source-map/dist/source-map.min.js", "lib/source-map.js")
-    FileUtils.cp("vendor/terser/dist/bundle.min.js", "lib/terser.js")
+
+    # FileUtils.cp("vendor/terser/dist/bundle.min.js", "lib/terser.js")
+    minified_source = `node ./vendor/terser/bin/terser vendor/terser/dist/bundle.min.js`
+    File.write("lib/terser.js", minified_source)
 
     FileUtils.cp("vendor/split/split.js", "lib/split.js")
     `patch -p1 -i patches/es5-string-split.patch`

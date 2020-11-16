@@ -1,5 +1,8 @@
 ## Unreleased
 
+## 1.1.0 (17 November 2020)
+- update TerserJS to [5.4.0]
+
 ## 1.0.2 (13 October 2020)
 - LICENSE.txt encoding fix
 - update rubocop to 0.93.1
