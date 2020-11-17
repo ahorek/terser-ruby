@@ -1,0 +1,37 @@
+diff --git a/lib/minify.js b/lib/minify.js
+index 53b0b56c..d6d334b7 100644
+--- a/lib/minify.js
++++ b/lib/minify.js
+@@ -61,6 +61,10 @@ function cache_to_json(cache) {
+ }
+ 
+ async function minify(files, options) {
++    return minifySync(files, options);
++}
++    
++function minifySync(files, options) {
+     options = defaults(options, {
+         compress: {},
+         ecma: undefined,
+@@ -264,5 +268,6 @@ async function minify(files, options) {
+ 
+ export {
+   minify,
++  minifySync,
+   to_ascii,
+ };
+diff --git a/main.js b/main.js
+index 0a10db5a..8eb0dc81 100644
+--- a/main.js
++++ b/main.js
+@@ -1,8 +1,8 @@
+ import "./lib/transform.js";
+ import "./lib/mozilla-ast.js";
+-import { minify } from "./lib/minify.js";
++import { minify, minifySync } from "./lib/minify.js";
+ 
+-export { minify } from "./lib/minify.js";
++export { minify, minifySync } from "./lib/minify.js";
+ export { run_cli as _run_cli } from "./lib/cli.js";
+ 
+ export async function _default_options() {

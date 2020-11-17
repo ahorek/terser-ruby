@@ -1,0 +1,183 @@
+ lib/minify.js                  |  8 ++++----
+ lib/sourcemap.js               | 16 ++++------------
+ package-lock.json              | 19 ++++++-------------
+ package.json                   |  4 ++--
+ test/benchmark.cjs             |  4 +---
+ test/input/issue-520/output.js |  2 +-
+ test/mocha/input-sourcemaps.js |  2 +-
+ test/mocha/utils.js            |  2 --
+ 8 files changed, 19 insertions(+), 38 deletions(-)
+
+diff --git a/lib/minify.js b/lib/minify.js
+index 53b0b56c..224b42bb 100644
+--- a/lib/minify.js
++++ b/lib/minify.js
+@@ -205,7 +205,10 @@ async function minify(files, options) {
+     }
+     if (!HOP(options.format, "code") || options.format.code) {
+         if (options.sourceMap) {
+-            options.format.source_map = await SourceMap({
++            if (typeof options.sourceMap.content == "string") {
++                options.sourceMap.content = JSON.parse(options.sourceMap.content);
++            }
++            options.format.source_map = SourceMap({
+                 file: options.sourceMap.filename,
+                 orig: options.sourceMap.content,
+                 root: options.sourceMap.root
+@@ -243,9 +246,6 @@ async function minify(files, options) {
+             options.nameCache.props = cache_to_json(options.mangle.properties.cache);
+         }
+     }
+-    if (options.format && options.format.source_map) {
+-        options.format.source_map.destroy();
+-    }
+     if (timings) {
+         timings.end = Date.now();
+         result.timings = {
+diff --git a/lib/sourcemap.js b/lib/sourcemap.js
+index 178a2088..86a7e02d 100644
+--- a/lib/sourcemap.js
++++ b/lib/sourcemap.js
+@@ -49,7 +49,7 @@ import {
+ } from "./utils/index.js";
+ 
+ // a small wrapper around fitzgen's source-map library
+-async function SourceMap(options) {
++function SourceMap(options) {
+     options = defaults(options, {
+         file : null,
+         root : null,
+@@ -58,15 +58,13 @@ async function SourceMap(options) {
+         orig_line_diff : 0,
+         dest_line_diff : 0,
+     });
+-
+-    var orig_map;
+     var generator = new MOZ_SourceMap.SourceMapGenerator({
+         file       : options.file,
+         sourceRoot : options.root
+     });
++    var orig_map = options.orig && new MOZ_SourceMap.SourceMapConsumer(options.orig);
+ 
+-    if (options.orig) {
+-        orig_map = await new MOZ_SourceMap.SourceMapConsumer(options.orig);
++    if (orig_map) {
+         orig_map.sources.forEach(function(source) {
+             var sourceContent = orig_map.sourceContentFor(source, true);
+             if (sourceContent) {
+@@ -96,16 +94,10 @@ async function SourceMap(options) {
+             name      : name
+         });
+     }
+-
+     return {
+         add        : add,
+         get        : function() { return generator; },
+-        toString   : function() { return generator.toString(); },
+-        destroy    : function () {
+-            if (orig_map && orig_map.destroy) {
+-                orig_map.destroy();
+-            }
+-        }
++        toString   : function() { return JSON.stringify(generator.toJSON()); }
+     };
+ }
+ 
+diff --git a/package-lock.json b/package-lock.json
+index 9afc1b16..7917c263 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -1933,24 +1933,17 @@
+       }
+     },
+     "source-map": {
+-      "version": "0.7.3",
+-      "resolved": "https://registry.npmjs.org/source-map/-/source-map-0.7.3.tgz",
+-      "integrity": "sha512-CkCj6giN3S+n9qrYiBTX5gystlENnRW5jZeNLHpe6aue+SrHcG5VYwujhW9s4dY31mEGsxBDrHR6oI69fTXsaQ=="
++      "version": "0.6.1",
++      "resolved": "https://registry.npmjs.org/source-map/-/source-map-0.6.1.tgz",
++      "integrity": "sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g=="
+     },
+     "source-map-support": {
+-      "version": "0.5.19",
+-      "resolved": "https://registry.npmjs.org/source-map-support/-/source-map-support-0.5.19.tgz",
+-      "integrity": "sha512-Wonm7zOCIJzBGQdB+thsPar0kYuCIzYvxZwlBa87yi/Mdjv7Tip2cyVbLj5o0cFPN4EVkuTwb3GDDyUx2DGnGw==",
++      "version": "0.5.13",
++      "resolved": "https://registry.npmjs.org/source-map-support/-/source-map-support-0.5.13.tgz",
++      "integrity": "sha512-SHSKFHadjVA5oR4PPqhtAVdcBWwRYVd6g6cAXnIbRiIwc2EhPrTuKUBdSLvlEKyIP3GCf89fltvcZiP9MMFA1w==",
+       "requires": {
+         "buffer-from": "^1.0.0",
+         "source-map": "^0.6.0"
+-      },
+-      "dependencies": {
+-        "source-map": {
+-          "version": "0.6.1",
+-          "resolved": "https://registry.npmjs.org/source-map/-/source-map-0.6.1.tgz",
+-          "integrity": "sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g=="
+-        }
+       }
+     },
+     "spawn-sync": {
+diff --git a/package.json b/package.json
+index 45db103e..5d1efe47 100644
+--- a/package.json
++++ b/package.json
+@@ -43,8 +43,8 @@
+   ],
+   "dependencies": {
+     "commander": "^2.20.0",
+-    "source-map": "~0.7.2",
+-    "source-map-support": "~0.5.19"
++    "source-map": "~0.6.1",
++    "source-map-support": "~0.5.12"
+   },
+   "devDependencies": {
+     "@ls-lint/ls-lint": "^1.9.2",
+diff --git a/test/benchmark.cjs b/test/benchmark.cjs
+index aea0059b..45769600 100644
+--- a/test/benchmark.cjs
++++ b/test/benchmark.cjs
+@@ -4,11 +4,9 @@
+ "use strict";
+ 
+ var createHash = require("crypto").createHash;
++var fetch = require("./fetch");
+ var fork = require("child_process").fork;
+ var zlib = require("zlib");
+-
+-var fetch = require("./fetch.cjs");
+-
+ var args = process.argv.slice(2);
+ if (!args.length) {
+     args.push("-mc");
+diff --git a/test/input/issue-520/output.js b/test/input/issue-520/output.js
+index 8d76f630..f6d13804 100644
+--- a/test/input/issue-520/output.js
++++ b/test/input/issue-520/output.js
+@@ -1,2 +1,2 @@
+ new function(){console.log(3)};
+-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInN0ZGluIl0sIm5hbWVzIjpbImNvbnNvbGUiLCJsb2ciXSwibWFwcGluZ3MiOiJBQUErQyxJQUFuQyxXQUFjQSxRQUFRQyxJQUFJIiwic291cmNlc0NvbnRlbnQiOlsiY2xhc3MgRm9vIHsgY29uc3RydWN0b3IoKXtjb25zb2xlLmxvZygxKzIpO30gfSBuZXcgRm9vKCk7XG4iXX0=
++//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInN0ZGluIl0sIm5hbWVzIjpbImNvbnNvbGUiLCJsb2ciXSwibWFwcGluZ3MiOiJBQUErQyxJQUFyQyxXQUFnQkEsUUFBUUMsSUFBSSIsInNvdXJjZXNDb250ZW50IjpbImNsYXNzIEZvbyB7IGNvbnN0cnVjdG9yKCl7Y29uc29sZS5sb2coMSsyKTt9IH0gbmV3IEZvbygpO1xuIl19
+diff --git a/test/mocha/input-sourcemaps.js b/test/mocha/input-sourcemaps.js
+index 55d624cb..50dc43d3 100644
+--- a/test/mocha/input-sourcemaps.js
++++ b/test/mocha/input-sourcemaps.js
+@@ -32,7 +32,7 @@ describe("input sourcemaps", function() {
+             }
+         });
+ 
+-        map = await new SourceMapConsumer(result.map);
++        map = new SourceMapConsumer(result.map);
+     }
+ 
+     beforeEach(async function () {
+diff --git a/test/mocha/utils.js b/test/mocha/utils.js
+index 6e2ae714..e5cd8a26 100644
+--- a/test/mocha/utils.js
++++ b/test/mocha/utils.js
+@@ -1,5 +1,3 @@
+-import assert from "assert";
+-
+ function decodeMap(mapData) {
+     const buffer = new Buffer(mapData.replace('data:application/json;charset=utf-8;base64,', ''), 'base64');
+     return JSON.parse(buffer.toString());

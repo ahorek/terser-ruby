@@ -7,12 +7,14 @@ gemfile(true) do
 
   gem "terser", git: "https://github.com/ahorek/terser-ruby.git"
   gem "uglifier"
-  gem "benchmark-ips"
 end
 
 require 'terser'
 require 'uglifier'
+require 'benchmark'
 
+N = 10
+es6 = true
 terser = Terser.new
 uglifier = Uglifier.new
 harmony_uglifier = Uglifier.new(harmony: true)
@@ -27,19 +29,23 @@ Foo.prototype.show = function () {
 };
 JS
 puts ''
-puts "original size: #{content.size}"
-puts "terser: #{Terser.compile(content).size}"
-puts "uglifier: #{Uglifier.compile(content).size}"
+puts "original size:    #{content.size}"
+puts "terser:           #{Terser.compile(content).size}"
+begin
+  puts "uglifier:         #{Uglifier.compile(content).size}"
+rescue Uglifier::Error
+  puts 'uglifier: skipped'
+  es6 = false
+end
 puts "uglifier harmony: #{Uglifier.compile(content, harmony: true).size}"
 
 puts ''
 puts 'benchmark'
-Benchmark.ips do |x|
-  x.report("terser") { Terser.compile(content) }
-  x.report("uglifier") { Uglifier.compile(content) }
-  x.report("uglifier harmony") { Uglifier.compile(content, harmony: true) }
-  x.report("terser precompiled") { terser.compile(content) }
-  x.report("uglifier precompiled") { uglifier.compile(content) }
-  x.report("uglifier harmony precompiled") { harmony_uglifier.compile(content) }
-  x.compare!
+Benchmark.bm do |x|
+  x.report("terser                      ") { N.times { Terser.compile(content) } }
+  x.report("uglifier                    ") { N.times { Uglifier.compile(content) } } if es6
+  x.report("uglifier harmony            ") { N.times { Uglifier.compile(content, harmony: true) } }
+  x.report("terser precompiled          ") { N.times { terser.compile(content) } }
+  x.report("uglifier precompiled        ") { N.times { uglifier.compile(content) } } if es6
+  x.report("uglifier harmony precompiled") { N.times { harmony_uglifier.compile(content) } }
 end
