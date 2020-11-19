@@ -26,7 +26,7 @@ Gem::Specification.new do |spec|
   ]
 
   spec.files = `git ls-files -z`.split("\x0").reject do |f|
-    f.match(%r{^(spec|vendor|gemfiles|patches|benchmark)/})
+    f.match(%r{^(spec|vendor|gemfiles|patches|benchmark|.github)/})
   end
   spec.require_paths = ["lib"]
 
