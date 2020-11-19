@@ -1,3 +1,5 @@
+require: rubocop-performance
+
 AllCops:
   DisplayCopNames: true
   TargetRubyVersion: 2.5
@@ -136,6 +138,8 @@ Style/RedundantRegexpEscape:
   Enabled: true
 Style/RedundantSelfAssignment:
   Enabled: true
+Style/RedundantBegin:
+  Enabled: false
 Style/SingleArgumentDig:
   Enabled: true
 Style/SlicingWithRange:
@@ -144,4 +148,58 @@ Style/SoleNestedConditional:
   Enabled: true
 Style/StringConcatenation:
   Enabled: true
-  
+Lint/DuplicateRegexpCharacterClassElement:
+  Enabled: true
+Lint/EmptyBlock:
+  Enabled: true
+Lint/NoReturnInBeginEndBlocks:
+  Enabled: true
+Lint/ToEnumArguments:
+  Enabled: true
+Lint/UnmodifiedReduceAccumulator:
+  Enabled: true
+Style/ArgumentsForwarding:
+  Enabled: true
+Style/CollectionCompact:
+  Enabled: true
+Style/DocumentDynamicEvalDefinition:
+  Enabled: true
+Style/NegatedIfElseCondition:
+  Enabled: true
+Style/SwapValues:
+  Enabled: true
+Lint/DuplicateBranch:
+  Enabled: true
+Lint/EmptyClass:
+  Enabled: true
+Style/NilLambda:
+  Enabled: true
+
+Performance/AncestorsInclude:
+  Enabled: true
+Performance/ArraySemiInfiniteRangeSlice:
+  Enabled: true
+Performance/BigDecimalWithNumericArgument:
+  Enabled: true
+Performance/BlockGivenWithExplicitBlock:
+  Enabled: true
+Performance/CollectionLiteralInLoop:
+  Enabled: true
+Performance/ConstantRegexp:
+  Enabled: true
+Performance/MethodObjectAsBlock:
+  Enabled: true
+Performance/RedundantSortBlock:
+  Enabled: true
+Performance/RedundantStringChars:
+  Enabled: true
+Performance/ReverseFirst:
+  Enabled: true
+Performance/SortReverse:
+  Enabled: true
+Performance/Squeeze:
+  Enabled: true
+Performance/StringInclude:
+  Enabled: true
+Performance/Sum:
+  Enabled: true

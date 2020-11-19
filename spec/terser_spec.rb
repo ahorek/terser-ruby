@@ -18,6 +18,22 @@ describe "Terser" do
     expect(minified.length).to be < source.length
   end
 
+  it "doesn't crash on eval undefined" do
+    source = "() => { let x; console.log(x + `?ts=${Date.now()}`); };"
+    minified = Terser.new(:compress => { :evaluate => true, :reduce_vars => true, :side_effects => false }).compile(source)
+    expect(minified).to include('undefined')
+  end
+
+  it "includes an error message" do
+    begin
+      Terser.new(:compress => true).compile(")(")
+    rescue Terser::Error => e
+      expect(e.message).to include("Unexpected token")
+    else
+      raise "Terser::Error expected"
+    end
+  end
+
   it "throws an exception when compilation fails" do
     expect { Terser.new.compile(")(") }.to raise_error(Terser::Error)
   end

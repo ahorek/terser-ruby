@@ -1,5 +1,10 @@
 ## Unreleased
 
+## 1.1.1 (19 November 2020)
+- update TerserJS to [5.5.0]
+- (bugfix) error messages
+- update rubocop to 1.3.1
+
 ## 1.1.0 (17 November 2020)
 - update TerserJS to [5.4.0]
 
