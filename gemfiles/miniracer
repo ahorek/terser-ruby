@@ -1,4 +1,5 @@
-source "https://rubygems.org"
+source 'https://rubygems.org' do
+  gem 'mini_racer'
+end
 
-gemspec :path=> "../"
-gem 'mini_racer'
+eval_gemfile("../Gemfile")
