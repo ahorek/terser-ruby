@@ -1,5 +1,8 @@
 ## Unreleased
 
+## 1.1.2 (03 March 2021)
+- update TerserJS to [5.6.0]
+
 ## 1.1.1 (19 November 2020)
 - update TerserJS to [5.5.0]
 - (bugfix) error messages
