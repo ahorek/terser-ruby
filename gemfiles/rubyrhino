@@ -1,5 +1,0 @@
-source 'https://rubygems.org' do
-  gem 'therubyrhino'
-end
-
-eval_gemfile("../Gemfile")
