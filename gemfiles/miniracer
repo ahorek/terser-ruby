@@ -1,5 +1,3 @@
-source 'https://rubygems.org' do
-  gem 'mini_racer'
-end
-
 eval_gemfile("../Gemfile")
+
+gem 'mini_racer'
