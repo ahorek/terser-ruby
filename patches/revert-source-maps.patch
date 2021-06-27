@@ -1,18 +1,8 @@
- lib/minify.js                  |  8 ++++----
- lib/sourcemap.js               | 16 ++++------------
- package-lock.json              | 19 ++++++-------------
- package.json                   |  4 ++--
- test/benchmark.cjs             |  4 +---
- test/input/issue-520/output.js |  2 +-
- test/mocha/input-sourcemaps.js |  2 +-
- test/mocha/utils.js            |  2 --
- 8 files changed, 19 insertions(+), 38 deletions(-)
-
 diff --git a/lib/minify.js b/lib/minify.js
-index 53b0b56c..224b42bb 100644
+index b9625e53..9060f985 100644
 --- a/lib/minify.js
 +++ b/lib/minify.js
-@@ -205,7 +205,10 @@ async function minify(files, options) {
+@@ -221,7 +221,10 @@ async function minify(files, options) {
      }
      if (!HOP(options.format, "code") || options.format.code) {
          if (options.sourceMap) {
@@ -24,7 +14,7 @@ index 53b0b56c..224b42bb 100644
                  file: options.sourceMap.filename,
                  orig: options.sourceMap.content,
                  root: options.sourceMap.root
-@@ -243,9 +246,6 @@ async function minify(files, options) {
+@@ -260,9 +263,6 @@ async function minify(files, options) {
              options.nameCache.props = cache_to_json(options.mangle.properties.cache);
          }
      }
@@ -84,10 +74,10 @@ index 178a2088..86a7e02d 100644
  }
  
 diff --git a/package-lock.json b/package-lock.json
-index 9afc1b16..7917c263 100644
+index 9a953b23..87e62bfc 100644
 --- a/package-lock.json
 +++ b/package-lock.json
-@@ -1933,24 +1933,17 @@
+@@ -4864,24 +4864,17 @@
        }
      },
      "source-map": {
@@ -119,10 +109,10 @@ index 9afc1b16..7917c263 100644
      },
      "spawn-sync": {
 diff --git a/package.json b/package.json
-index 45db103e..5d1efe47 100644
+index fd23ab58..39e84296 100644
 --- a/package.json
 +++ b/package.json
-@@ -43,8 +43,8 @@
+@@ -44,8 +44,8 @@
    ],
    "dependencies": {
      "commander": "^2.20.0",
