@@ -11,10 +11,9 @@ ES6 support
 
 ### Rails
 
-When used in Rails, replace
+When used in Rails, add or replace
 
 ```ruby
-Sprockets.register_compressor 'application/javascript', :terser, Terser::Compressor
 Rails.application.configure do
   config.assets.js_compressor = :terser
 end

@@ -4,6 +4,7 @@
 require "json"
 require "base64"
 require "execjs"
+require "terser/railtie" if defined?(::Rails::Railtie)
 require "terser/version"
 
 # A wrapper around the Terser interface
