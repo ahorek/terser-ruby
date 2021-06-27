@@ -1,5 +1,6 @@
 ## Unreleased
 - update TerserJS to [5.7.0]
+- use railtie to register compressor on Rails initialization
 
 ## 1.1.3 (23 March 2021)
 - update TerserJS to [5.6.1]
