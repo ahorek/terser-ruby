@@ -174,6 +174,52 @@ Lint/EmptyClass:
   Enabled: true
 Style/NilLambda:
   Enabled: true
+Gemspec/DateAssignment: # (new in 1.10)
+  Enabled: true
+Layout/LineEndStringConcatenationIndentation: # (new in 1.18)
+  Enabled: true
+Layout/SpaceBeforeBrackets: # (new in 1.7)
+  Enabled: true
+Lint/AmbiguousAssignment: # (new in 1.7)
+  Enabled: true
+Lint/DeprecatedConstants: # (new in 1.8)
+  Enabled: true
+Lint/EmptyInPattern: # (new in 1.16)
+  Enabled: true
+Lint/LambdaWithoutLiteralBlock: # (new in 1.8)
+  Enabled: true
+Lint/NumberedParameterAssignment: # (new in 1.9)
+  Enabled: true
+Lint/OrAssignmentToConstant: # (new in 1.9)
+  Enabled: true
+Lint/RedundantDirGlobSort: # (new in 1.8)
+  Enabled: true
+Lint/SymbolConversion: # (new in 1.9)
+  Enabled: true
+Lint/TripleQuotes: # (new in 1.9)
+  Enabled: true
+Lint/UnexpectedBlockArity: # (new in 1.5)
+  Enabled: true
+Naming/InclusiveLanguage: # (new in 1.18)
+  Enabled: true
+Style/EndlessMethod: # (new in 1.8)
+  Enabled: true
+Style/HashConversion: # (new in 1.10)
+  Enabled: true
+Style/HashExcept: # (new in 1.7)
+  Enabled: true
+Style/IfWithBooleanLiteralBranches: # (new in 1.9)
+  Enabled: true
+Style/InPatternThen: # (new in 1.16)
+  Enabled: true
+Style/MultilineInPatternThen: # (new in 1.16)
+  Enabled: true
+Style/QuotedSymbols: # (new in 1.16)
+  Enabled: true
+Style/RedundantArgument: # (new in 1.4)
+  Enabled: true
+Style/StringChars: # (new in 1.12)
+  Enabled: true
 
 Performance/AncestorsInclude:
   Enabled: true
@@ -202,4 +248,10 @@ Performance/Squeeze:
 Performance/StringInclude:
   Enabled: true
 Performance/Sum:
+  Enabled: true
+Performance/MapCompact: # (new in 1.11)
+  Enabled: true
+Performance/RedundantEqualityComparisonBlock: # (new in 1.10)
+  Enabled: true
+Performance/RedundantSplitRegexpArgument: # (new in 1.10)
   Enabled: true
