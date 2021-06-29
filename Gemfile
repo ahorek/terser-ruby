@@ -6,7 +6,7 @@ gemspec
 
 unless RUBY_VERSION < '2.5'
   group :development do
-    gem 'rubocop', '~> 1.3.1'
-    gem 'rubocop-performance', '~> 1.9.0', :require => false
+    gem 'rubocop', '~> 1.18.0'
+    gem 'rubocop-performance', '~> 1.11.3', :require => false
   end
 end
