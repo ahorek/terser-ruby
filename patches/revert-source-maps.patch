@@ -1,8 +1,8 @@
 diff --git a/lib/minify.js b/lib/minify.js
-index b9625e53..9060f985 100644
+index 82d9ca3d..9d4bd976 100644
 --- a/lib/minify.js
 +++ b/lib/minify.js
-@@ -221,7 +221,10 @@ async function minify(files, options) {
+@@ -271,7 +271,10 @@ async function minify(files, options, _fs_module) {
      }
      if (!HOP(options.format, "code") || options.format.code) {
          if (options.sourceMap) {
@@ -14,7 +14,7 @@ index b9625e53..9060f985 100644
                  file: options.sourceMap.filename,
                  orig: options.sourceMap.content,
                  root: options.sourceMap.root
-@@ -260,9 +263,6 @@ async function minify(files, options) {
+@@ -310,9 +313,6 @@ async function minify(files, options, _fs_module) {
              options.nameCache.props = cache_to_json(options.mangle.properties.cache);
          }
      }
@@ -74,24 +74,27 @@ index 178a2088..86a7e02d 100644
  }
  
 diff --git a/package-lock.json b/package-lock.json
-index 9a953b23..87e62bfc 100644
+index 7c41d257..997ebebf 100644
 --- a/package-lock.json
 +++ b/package-lock.json
-@@ -4864,24 +4864,17 @@
+@@ -1491,27 +1491,17 @@
        }
      },
      "source-map": {
--      "version": "0.7.3",
--      "resolved": "https://registry.npmjs.org/source-map/-/source-map-0.7.3.tgz",
--      "integrity": "sha512-CkCj6giN3S+n9qrYiBTX5gystlENnRW5jZeNLHpe6aue+SrHcG5VYwujhW9s4dY31mEGsxBDrHR6oI69fTXsaQ=="
+-      "version": "0.8.0-beta.0",
+-      "resolved": "https://registry.npmjs.org/source-map/-/source-map-0.8.0-beta.0.tgz",
+-      "integrity": "sha512-2ymg6oRBpebeZi9UUNsgQ89bhx01TcTkmNTGnNO88imTmbSgy4nfujrgVEFKWpMTEGA11EDkTt7mqObTPdigIA==",
+-      "requires": {
+-        "whatwg-url": "^7.0.0"
+-      }
 +      "version": "0.6.1",
 +      "resolved": "https://registry.npmjs.org/source-map/-/source-map-0.6.1.tgz",
 +      "integrity": "sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g=="
      },
      "source-map-support": {
--      "version": "0.5.19",
--      "resolved": "https://registry.npmjs.org/source-map-support/-/source-map-support-0.5.19.tgz",
--      "integrity": "sha512-Wonm7zOCIJzBGQdB+thsPar0kYuCIzYvxZwlBa87yi/Mdjv7Tip2cyVbLj5o0cFPN4EVkuTwb3GDDyUx2DGnGw==",
+-      "version": "0.5.20",
+-      "resolved": "https://registry.npmjs.org/source-map-support/-/source-map-support-0.5.20.tgz",
+-      "integrity": "sha512-n1lZZ8Ve4ksRqizaBQgxXDgKwttHDhyfQjA6YZZn8+AroHbsIz+JjwxQDxbp+7y5OYCI8t1Yk7etjD9CRd2hIw==",
 +      "version": "0.5.13",
 +      "resolved": "https://registry.npmjs.org/source-map-support/-/source-map-support-0.5.13.tgz",
 +      "integrity": "sha512-SHSKFHadjVA5oR4PPqhtAVdcBWwRYVd6g6cAXnIbRiIwc2EhPrTuKUBdSLvlEKyIP3GCf89fltvcZiP9MMFA1w==",
@@ -109,20 +112,20 @@ index 9a953b23..87e62bfc 100644
      },
      "spawn-sync": {
 diff --git a/package.json b/package.json
-index fd23ab58..39e84296 100644
+index 2f11ca4e..693f6119 100644
 --- a/package.json
 +++ b/package.json
-@@ -44,8 +44,8 @@
-   ],
+@@ -45,8 +45,8 @@
    "dependencies": {
+     "acorn": "^8.5.0",
      "commander": "^2.20.0",
--    "source-map": "~0.7.2",
--    "source-map-support": "~0.5.19"
+-    "source-map": "~0.8.0-beta.0",
+-    "source-map-support": "~0.5.20"
 +    "source-map": "~0.6.1",
 +    "source-map-support": "~0.5.12"
    },
    "devDependencies": {
-     "@ls-lint/ls-lint": "^1.9.2",
+     "@ls-lint/ls-lint": "^1.10.0",
 diff --git a/test/benchmark.cjs b/test/benchmark.cjs
 index aea0059b..45769600 100644
 --- a/test/benchmark.cjs
