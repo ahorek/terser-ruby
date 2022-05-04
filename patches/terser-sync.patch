@@ -1,19 +1,19 @@
 diff --git a/lib/minify.js b/lib/minify.js
-index b9625e53..265f4d67 100644
+index 82d9ca3d..e896e5b1 100644
 --- a/lib/minify.js
 +++ b/lib/minify.js
-@@ -61,6 +61,10 @@ function cache_to_json(cache) {
+@@ -100,6 +100,10 @@ function log_input(files, options, fs, debug_folder) {
  }
  
- async function minify(files, options) {
-+    return minifySync(files, options);
+ async function minify(files, options, _fs_module) {
++    return minifySync(files, options, _fs_module);
 +}
-+    
-+function minifySync(files, options) {
-     options = defaults(options, {
-         compress: {},
-         ecma: undefined,
-@@ -281,5 +285,6 @@ async function minify(files, options) {
++
++function minifySync(files, options, _fs_module) {
+     if (
+         _fs_module
+         && typeof process === "object"
+@@ -331,5 +335,6 @@ async function minify(files, options, _fs_module) {
  
  export {
    minify,

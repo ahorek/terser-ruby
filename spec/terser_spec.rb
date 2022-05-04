@@ -388,6 +388,11 @@ describe "Terser" do
     it "defaults to not collapsing variables" do
       expect(Terser.compile(code)).to include("return window.Handlebars")
     end
+
+    it "collapse self-assignment" do
+      code = 'export function f(x) { x = x; }'
+      expect(Terser.compile(code, :compress => { :collapse_vars => true })).to include("export function f(){}")
+    end
   end
 
   it "keeps unused function arguments when keep_fargs option is set" do
