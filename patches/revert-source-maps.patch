@@ -1,20 +1,62 @@
 diff --git a/lib/minify.js b/lib/minify.js
-index 82d9ca3d..9d4bd976 100644
+index aa3f73d8..0731d838 100644
 --- a/lib/minify.js
 +++ b/lib/minify.js
-@@ -271,7 +271,10 @@ async function minify(files, options, _fs_module) {
-     }
-     if (!HOP(options.format, "code") || options.format.code) {
+@@ -297,15 +297,21 @@ async function minify(files, options, _fs_module) {
+         }
+ 
          if (options.sourceMap) {
--            options.format.source_map = await SourceMap({
+-            if (options.sourceMap.includeSources && files instanceof AST_Toplevel) {
+-                throw new Error("original source content unavailable");
 +            if (typeof options.sourceMap.content == "string") {
 +                options.sourceMap.content = JSON.parse(options.sourceMap.content);
-+            }
+             }
+-            options.format.source_map = await SourceMap({
 +            options.format.source_map = SourceMap({
                  file: options.sourceMap.filename,
                  orig: options.sourceMap.content,
-                 root: options.sourceMap.root
-@@ -310,9 +313,6 @@ async function minify(files, options, _fs_module) {
+-                root: options.sourceMap.root,
+-                files: options.sourceMap.includeSources ? files : null,
++                root: options.sourceMap.root
+             });
++            if (options.sourceMap.includeSources) {
++                if (files instanceof AST_Toplevel) {
++                    throw new Error("original source content unavailable");
++                } else for (var name in files) if (HOP(files, name)) {
++                    options.format.source_map.get().setSourceContent(name, files[name]);
++                }
++            }
+         }
+         delete options.format.ast;
+         delete options.format.code;
+@@ -314,21 +320,11 @@ async function minify(files, options, _fs_module) {
+         toplevel.print(stream);
+         result.code = stream.get();
+         if (options.sourceMap) {
+-            Object.defineProperty(result, "map", {
+-                configurable: true,
+-                enumerable: true,
+-                get() {
+-                    const map = options.format.source_map.getEncoded();
+-                    return (result.map = options.sourceMap.asObject ? map : JSON.stringify(map));
+-                },
+-                set(value) {
+-                    Object.defineProperty(result, "map", {
+-                        value,
+-                        writable: true,
+-                    });
+-                }
+-            });
+-            result.decoded_map = options.format.source_map.getDecoded();
++            if(options.sourceMap.asObject) {
++                result.map = options.format.source_map.get().toJSON();
++            } else {
++                result.map = options.format.source_map.toString();
++            }
+             if (options.sourceMap.url == "inline") {
+                 var sourceMap = typeof result.map === "object" ? JSON.stringify(result.map) : result.map;
+                 result.code += "\n//# sourceMappingURL=data:application/json;charset=utf-8;base64," + to_base64(sourceMap);
+@@ -343,9 +339,6 @@ async function minify(files, options, _fs_module) {
              options.nameCache.props = cache_to_json(options.mangle.properties.cache);
          }
      }
@@ -25,65 +67,91 @@ index 82d9ca3d..9d4bd976 100644
          timings.end = Date.now();
          result.timings = {
 diff --git a/lib/sourcemap.js b/lib/sourcemap.js
-index 178a2088..86a7e02d 100644
+index f376ccc8..4fd32e84 100644
 --- a/lib/sourcemap.js
 +++ b/lib/sourcemap.js
-@@ -49,7 +49,7 @@ import {
- } from "./utils/index.js";
+@@ -47,38 +47,26 @@ import {SourceMapConsumer, SourceMapGenerator} from "@jridgewell/source-map";
+ import {defaults, HOP} from "./utils/index.js";
  
- // a small wrapper around fitzgen's source-map library
+ // a small wrapper around source-map and @jridgewell/source-map
 -async function SourceMap(options) {
 +function SourceMap(options) {
      options = defaults(options, {
          file : null,
          root : null,
-@@ -58,15 +58,13 @@ async function SourceMap(options) {
-         orig_line_diff : 0,
-         dest_line_diff : 0,
+         orig : null,
+         files: {},
      });
 -
 -    var orig_map;
-     var generator = new MOZ_SourceMap.SourceMapGenerator({
+     var generator = new SourceMapGenerator({
          file       : options.file,
          sourceRoot : options.root
      });
 +    var orig_map = options.orig && new MOZ_SourceMap.SourceMapConsumer(options.orig);
  
+-    let sourcesContent = {__proto__: null};
+-    let files = options.files;
+-    for (var name in files) if (HOP(files, name)) {
+-        sourcesContent[name] = files[name];
+-    }
 -    if (options.orig) {
--        orig_map = await new MOZ_SourceMap.SourceMapConsumer(options.orig);
+-        // We support both @jridgewell/source-map (which has a sync
+-        // SourceMapConsumer) and source-map (which has an async
+-        // SourceMapConsumer).
+-        orig_map = await new SourceMapConsumer(options.orig);
+-        if (orig_map.sourcesContent) {
+-            orig_map.sources.forEach(function(source, i) {
+-                var content = orig_map.sourcesContent[i];
+-                if (content) {
+-                    sourcesContent[source] = content;
+-                }
+-            });
+-        }
 +    if (orig_map) {
-         orig_map.sources.forEach(function(source) {
-             var sourceContent = orig_map.sourceContentFor(source, true);
-             if (sourceContent) {
-@@ -96,16 +94,10 @@ async function SourceMap(options) {
-             name      : name
++        orig_map.sources.forEach(function(source) {
++            var sourceContent = orig_map.sourceContentFor(source, true);
++            if (sourceContent) {
++                generator.setSourceContent(source, sourceContent);
++            }
++        });
+     }
+ 
+     function add(source, gen_line, gen_col, orig_line, orig_col, name) {
+@@ -111,7 +99,6 @@ async function SourceMap(options) {
          });
+         generator.setSourceContent(source, sourcesContent[source]);
      }
 -
+     function clean(map) {
+         const allNull = map.sourcesContent && map.sourcesContent.every(c => c == null);
+         if (allNull) delete map.sourcesContent;
+@@ -136,10 +123,9 @@ async function SourceMap(options) {
+     }
+ 
      return {
-         add        : add,
-         get        : function() { return generator; },
--        toString   : function() { return generator.toString(); },
--        destroy    : function () {
--            if (orig_map && orig_map.destroy) {
--                orig_map.destroy();
--            }
--        }
+-        add,
+-        getDecoded,
+-        getEncoded,
+-        destroy,
++        add        : add,
++        get        : function() { return generator; },
 +        toString   : function() { return JSON.stringify(generator.toJSON()); }
      };
  }
  
 diff --git a/package-lock.json b/package-lock.json
-index 7c41d257..997ebebf 100644
+index 7afb74f3..b9ab9960 100644
 --- a/package-lock.json
 +++ b/package-lock.json
-@@ -1491,27 +1491,17 @@
+@@ -1536,28 +1536,17 @@
        }
      },
      "source-map": {
 -      "version": "0.8.0-beta.0",
 -      "resolved": "https://registry.npmjs.org/source-map/-/source-map-0.8.0-beta.0.tgz",
 -      "integrity": "sha512-2ymg6oRBpebeZi9UUNsgQ89bhx01TcTkmNTGnNO88imTmbSgy4nfujrgVEFKWpMTEGA11EDkTt7mqObTPdigIA==",
+-      "dev": true,
 -      "requires": {
 -        "whatwg-url": "^7.0.0"
 -      }
@@ -112,20 +180,29 @@ index 7c41d257..997ebebf 100644
      },
      "spawn-sync": {
 diff --git a/package.json b/package.json
-index 2f11ca4e..693f6119 100644
+index 0a29e443..8e1320f1 100644
 --- a/package.json
 +++ b/package.json
-@@ -45,8 +45,8 @@
-   "dependencies": {
+@@ -47,7 +47,8 @@
+     "@jridgewell/source-map": "^0.3.2",
      "acorn": "^8.5.0",
      "commander": "^2.20.0",
--    "source-map": "~0.8.0-beta.0",
 -    "source-map-support": "~0.5.20"
 +    "source-map": "~0.6.1",
 +    "source-map-support": "~0.5.12"
    },
    "devDependencies": {
      "@ls-lint/ls-lint": "^1.10.0",
+@@ -59,8 +60,7 @@
+     "pre-commit": "^1.2.2",
+     "rimraf": "^3.0.2",
+     "rollup": "2.56.3",
+-    "semver": "^7.3.4",
+-    "source-map": "~0.8.0-beta.0"
++    "semver": "^7.3.4"
+   },
+   "scripts": {
+     "test": "node test/compress.js && mocha test/mocha",
 diff --git a/test/benchmark.cjs b/test/benchmark.cjs
 index aea0059b..45769600 100644
 --- a/test/benchmark.cjs
@@ -144,15 +221,15 @@ index aea0059b..45769600 100644
  if (!args.length) {
      args.push("-mc");
 diff --git a/test/input/issue-520/output.js b/test/input/issue-520/output.js
-index 8d76f630..f6d13804 100644
+index 0aa3c963..f6d13804 100644
 --- a/test/input/issue-520/output.js
 +++ b/test/input/issue-520/output.js
 @@ -1,2 +1,2 @@
  new function(){console.log(3)};
--//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInN0ZGluIl0sIm5hbWVzIjpbImNvbnNvbGUiLCJsb2ciXSwibWFwcGluZ3MiOiJBQUErQyxJQUFuQyxXQUFjQSxRQUFRQyxJQUFJIiwic291cmNlc0NvbnRlbnQiOlsiY2xhc3MgRm9vIHsgY29uc3RydWN0b3IoKXtjb25zb2xlLmxvZygxKzIpO30gfSBuZXcgRm9vKCk7XG4iXX0=
+-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJjb25zb2xlIiwibG9nIl0sInNvdXJjZXMiOlsic3RkaW4iXSwic291cmNlc0NvbnRlbnQiOlsiY2xhc3MgRm9vIHsgY29uc3RydWN0b3IoKXtjb25zb2xlLmxvZygxKzIpO30gfSBuZXcgRm9vKCk7XG4iXSwibWFwcGluZ3MiOiJBQUErQyxJQUFyQyxXQUFnQkEsUUFBUUMsSUFBSSJ9
 +//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInN0ZGluIl0sIm5hbWVzIjpbImNvbnNvbGUiLCJsb2ciXSwibWFwcGluZ3MiOiJBQUErQyxJQUFyQyxXQUFnQkEsUUFBUUMsSUFBSSIsInNvdXJjZXNDb250ZW50IjpbImNsYXNzIEZvbyB7IGNvbnN0cnVjdG9yKCl7Y29uc29sZS5sb2coMSsyKTt9IH0gbmV3IEZvbygpO1xuIl19
 diff --git a/test/mocha/input-sourcemaps.js b/test/mocha/input-sourcemaps.js
-index 55d624cb..50dc43d3 100644
+index e0bffb43..ccdca452 100644
 --- a/test/mocha/input-sourcemaps.js
 +++ b/test/mocha/input-sourcemaps.js
 @@ -32,7 +32,7 @@ describe("input sourcemaps", function() {
