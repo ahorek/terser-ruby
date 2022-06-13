@@ -32,6 +32,8 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby }}
+    - name: Update rubygems
+      run: gem update --system
     - name: Install dependencies
       env:
         BUNDLE_GEMFILE: ${{ matrix.gemfile || 'Gemfile' }}
