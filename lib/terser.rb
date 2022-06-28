@@ -32,6 +32,7 @@ class Terser
       :ascii_only => true, # Escape non-ASCII characterss
       :comments => :copyright, # Preserve comments (:all, :jsdoc, :copyright, :none)
       :inline_script => false, # Escape occurrences of </script in strings
+      :keep_numbers => false, # Disables optimizations like converting 1000000 into 1e6
       :quote_keys => false, # Quote keys in object literals
       :max_line_len => 32 * 1024, # Maximum line length in minified code
       :semicolons => true, # Separate statements with semicolons
@@ -80,6 +81,7 @@ class Terser
       :pure_funcs => nil, # List of functions without side-effects. Can safely discard function calls when the result value is not used
       :drop_console => false, # Drop calls to console.* functions
       :keep_fargs => false, # Preserve unused function arguments
+      :keep_classnames => false, # Prevents discarding or mangling of class names. Pass a regular expression to only keep class names matching that regex.
       :keep_fnames => false, # Do not drop names in function definitions
       :passes => 1, # Number of times to run compress. Raising the number of passes will increase compress time, but can produce slightly smaller code.
       :keep_infinity => false, # Prevent compression of Infinity to 1/0
@@ -94,7 +96,8 @@ class Terser
       :strict => false
     },
     :define => {}, # Define values for symbol replacement
-    :keep_fnames => false, # Generate code safe for the poor souls relying on Function.prototype.name at run-time. Sets both compress and mangle keep_fanems to true.
+    :keep_fnames => false, # Generate code safe for the poor souls relying on Function.prototype.name at run-time. Sets both compress and mangle keep_fnames to true.
+    :keep_classnames => false, # Prevents discarding or mangling of class names. Sets both compress and mangle keep_classnames to true.
     :toplevel => false,
     :source_map => false, # Generate source map
     :error_context_lines => 8 # How many lines surrounding the error line
@@ -297,7 +300,8 @@ class Terser
   def mangle_options
     defaults = conditional_option(
       DEFAULTS[:mangle],
-      :keep_fnames => keep_fnames?(:mangle)
+      :keep_fnames => keep_fnames?(:mangle),
+      :keep_classnames => keep_classnames?(:mangle)
     )
 
     conditional_option(
@@ -335,7 +339,10 @@ class Terser
     conditional_option(
       @options[:compress],
       defaults,
-      { :keep_fnames => keep_fnames?(:compress) }.merge(negate_iife_block)
+      {
+        :keep_fnames => keep_fnames?(:compress),
+        :keep_classnames => keep_classnames?(:compress)
+      }.merge(negate_iife_block)
     )
   end
 
@@ -400,6 +407,15 @@ class Terser
     else
       @options[type].respond_to?(:[]) && @options[type][:keep_fnames] ||
         DEFAULTS[type].respond_to?(:[]) && DEFAULTS[type][:keep_fnames]
+    end
+  end
+
+  def keep_classnames?(type)
+    if @options[:keep_classnames] || DEFAULTS[:keep_classnames]
+      true
+    else
+      @options[type].respond_to?(:[]) && @options[type][:keep_classnames] ||
+        DEFAULTS[type].respond_to?(:[]) && DEFAULTS[type][:keep_classnames]
     end
   end
 
