@@ -457,12 +457,12 @@ describe "Terser" do
     end
 
     it "keeps function names in output when compressor keep_classnames is set" do
-      out = Terser.compile(code, :compress => false, :keep_classnames => true )
+      out = Terser.compile(code, :compress => false, :keep_classnames => true)
       expect(out).to include("Bar")
     end
 
     it "keeps function names in output when compressor keep_classnames is set as regex" do
-      out = Terser.compile(code, :compress => false, :keep_classnames => /Bar$/ )
+      out = Terser.compile(code, :compress => false, :keep_classnames => /Bar$/)
       expect(out).to include("Bar")
     end
 
@@ -472,7 +472,7 @@ describe "Terser" do
     end
 
     it "keeps function names in output when compressor keep_classnames is false" do
-      out = Terser.compile(code, :compress => false, :keep_classnames => false )
+      out = Terser.compile(code, :compress => false, :keep_classnames => false)
       expect(out).not_to include("Bar")
     end
 
@@ -492,12 +492,12 @@ describe "Terser" do
     end
 
     it "keeps number in the original form" do
-      out = Terser.compile(code, :compress => false, :output => { :keep_numbers => true } )
+      out = Terser.compile(code, :compress => false, :output => { :keep_numbers => true })
       expect(out).to include("1000000000000")
     end
 
     it "uses a short form" do
-      out = Terser.compile(code, :compress => false, :output => { :keep_numbers => false } )
+      out = Terser.compile(code, :compress => false, :output => { :keep_numbers => false })
       expect(out).to include("1e12")
     end
   end
