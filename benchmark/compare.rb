@@ -5,7 +5,7 @@ require "bundler/inline"
 gemfile(true) do
   source "https://rubygems.org"
 
-  gem "terser", git: "https://github.com/ahorek/terser-ruby.git"
+  gem "terser", path: ".."
   gem "uglifier"
 end
 
