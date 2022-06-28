@@ -447,6 +447,61 @@ describe "Terser" do
     end
   end
 
+  describe 'keep_classnames' do
+    let(:code) do
+      <<-JS
+      function foo() {
+        class Bar {}
+      }
+      JS
+    end
+
+    it "keeps function names in output when compressor keep_classnames is set" do
+      out = Terser.compile(code, :compress => false, :keep_classnames => true)
+      expect(out).to include("Bar")
+    end
+
+    it "keeps function names in output when compressor keep_classnames is set as regex" do
+      out = Terser.compile(code, :compress => false, :keep_classnames => /Bar$/)
+      expect(out).to include("Bar")
+    end
+
+    it "keeps function names in output when compressor keep_classnames is set via mangle" do
+      out = Terser.compile(code, :compress => false, :mangle => { :keep_classnames => true })
+      expect(out).to include("Bar")
+    end
+
+    it "keeps function names in output when compressor keep_classnames is false" do
+      out = Terser.compile(code, :compress => false, :keep_classnames => false)
+      expect(out).not_to include("Bar")
+    end
+
+    it "keeps function names in output when compressor keep_classnames is not set" do
+      out = Terser.compile(code, :compress => false)
+      expect(out).not_to include("Bar")
+    end
+  end
+
+  describe 'keep_numbers' do
+    let(:code) do
+      <<-JS
+      function foo() {
+        return 1000000000000;
+      }
+      JS
+    end
+
+    it "keeps number in the original form" do
+      out = Terser.compile(code, :compress => false, :output => { :keep_numbers => true })
+      expect(out).to include("1000000000000")
+    end
+
+    it "uses a short form" do
+      out = Terser.compile(code, :compress => false, :output => { :keep_numbers => false })
+      expect(out).to include("1e12")
+    end
+  end
+
   describe "Input Formats" do
     let(:code) { "function hello() { return 'hello world'; }" }
 

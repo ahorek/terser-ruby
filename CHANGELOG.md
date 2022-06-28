@@ -1,4 +1,8 @@
 ## Unreleased
+
+## 1.1.11 (28 June 2022)
+- add keep_classnames and keep_numbers available in terser (default is false)
+
 ## 1.1.10 (13 June 2022)
 - update TerserJS to [5.14.1]
 
