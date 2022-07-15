@@ -427,7 +427,7 @@ class Terser
       :filename => options[:output_filename],
       :root => options.fetch(:root) { input_map ? input_map["sourceRoot"] : nil },
       :content => input_map,
-      #:map_url => options[:map_url],
+      # :map_url => options[:map_url],
       :url => options[:url],
       :includeSources => options[:sources_content]
     }
