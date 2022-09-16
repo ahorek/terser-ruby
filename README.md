@@ -25,6 +25,11 @@ in `config/environments/production.rb`.
 Terser is available as a ruby gem.
 
     $ gem install terser
+ 
+Or add to your Gemfile:
+
+    $ bundle add terser
+    $ bundle install
 
 Ensure that your environment has a JavaScript interpreter supported by
 [ExecJS](https://github.com/sstephenson/execjs). Using `miniracer` gem or NodeJS
