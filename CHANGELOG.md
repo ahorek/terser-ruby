@@ -1,4 +1,7 @@
 ## Unreleased
+## 1.1.13 (03 December 2022)
+- update TerserJS to [5.16.1]
+
 ## 1.1.12 (15 July 2022)
 - update TerserJS to [5.14.2]
 
