@@ -4,9 +4,9 @@ source "https://rubygems.org"
 
 gemspec
 
-unless RUBY_VERSION < '2.5'
+unless RUBY_VERSION < '2.6'
   group :development do
-    gem 'rubocop', '~> 1.18.0'
-    gem 'rubocop-performance', '~> 1.11.3', :require => false
+    gem 'rubocop', '~> 1.46.0'
+    gem 'rubocop-performance', '~> 1.16.0', :require => false
   end
 end

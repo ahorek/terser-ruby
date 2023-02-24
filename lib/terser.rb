@@ -4,7 +4,7 @@
 require "json"
 require "base64"
 require "execjs"
-require "terser/railtie" if defined?(::Rails::Railtie)
+require "terser/railtie" if defined?(Rails::Railtie)
 require "terser/version"
 
 # A wrapper around the Terser interface
@@ -405,8 +405,8 @@ class Terser
     if @options[:keep_fnames] || DEFAULTS[:keep_fnames]
       true
     else
-      @options[type].respond_to?(:[]) && @options[type][:keep_fnames] ||
-        DEFAULTS[type].respond_to?(:[]) && DEFAULTS[type][:keep_fnames]
+      (@options[type].respond_to?(:[]) && @options[type][:keep_fnames]) ||
+        (DEFAULTS[type].respond_to?(:[]) && DEFAULTS[type][:keep_fnames])
     end
   end
 
@@ -414,8 +414,8 @@ class Terser
     if @options[:keep_classnames] || DEFAULTS[:keep_classnames]
       true
     else
-      @options[type].respond_to?(:[]) && @options[type][:keep_classnames] ||
-        DEFAULTS[type].respond_to?(:[]) && DEFAULTS[type][:keep_classnames]
+      (@options[type].respond_to?(:[]) && @options[type][:keep_classnames]) ||
+        (DEFAULTS[type].respond_to?(:[]) && DEFAULTS[type][:keep_classnames])
     end
   end
 
