@@ -699,7 +699,7 @@ describe "Terser" do
   describe 'quote style' do
     let(:code) do
       <<-JS
-        function fun() { return "foo \\\"bar\\\""; }
+        function fun() { return "foo \\"bar\\""; }
       JS
     end
 

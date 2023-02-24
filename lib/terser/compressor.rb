@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'sprockets/digest_utils'
-require 'sprockets/source_map_utils' if Gem::Version.new(::Sprockets::VERSION) >= Gem::Version.new('4.x')
+require 'sprockets/source_map_utils' if Gem::Version.new(Sprockets::VERSION) >= Gem::Version.new('4.x')
 
 class Terser
   # A wrapper for Sprockets
