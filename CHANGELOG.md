@@ -1,4 +1,6 @@
 ## Unreleased
+## 1.1.14 (24 February 2023)
+- update TerserJS to [5.16.5]
 - update Rubocop
 
 ## 1.1.13 (03 December 2022)

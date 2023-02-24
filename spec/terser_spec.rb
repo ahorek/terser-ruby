@@ -600,6 +600,12 @@ describe "Terser" do
       expect(compiled).to include("obj1<=obj2")
     end
 
+    it 'does not loose equality with BigInt == number' do
+      code = 'if (-1 !== -1n) console.log("PASS");'
+      compiled = Terser.compile(code, :mangle => false, :compress => options)
+      expect(compiled).to include('-1!==-1n&&console.log("PASS");')
+    end
+
     it 'optimises unsafe comparisons when unsafe_comps is enabled' do
       compiled = Terser.compile(
         code,

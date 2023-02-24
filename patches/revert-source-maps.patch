@@ -1,8 +1,24 @@
 diff --git a/lib/minify.js b/lib/minify.js
-index aa3f73d8..0731d838 100644
+index 725e3d96..4cef6bb1 100644
 --- a/lib/minify.js
 +++ b/lib/minify.js
-@@ -297,15 +297,21 @@ async function minify(files, options, _fs_module) {
+@@ -280,13 +280,10 @@ async function minify(files, options, _fs_module) {
+     if (options.format.spidermonkey) {
+         result.ast = toplevel.to_mozilla_ast();
+     }
+-    let format_options;
+     if (!HOP(options.format, "code") || options.format.code) {
+-        // Make a shallow copy so that we can modify without mutating the user's input.
+-        format_options = {...options.format};
+-        if (!format_options.ast) {
++        if (!options.format.ast) {
+             // Destroy stuff to save RAM. (unless the deprecated `ast` option is on)
+-            format_options._destroy_ast = true;
++            options.format._destroy_ast = true;
+ 
+             walk(toplevel, node => {
+                 if (node instanceof AST_Scope) {
+@@ -303,38 +300,34 @@ async function minify(files, options, _fs_module) {
          }
  
          if (options.sourceMap) {
@@ -11,7 +27,7 @@ index aa3f73d8..0731d838 100644
 +            if (typeof options.sourceMap.content == "string") {
 +                options.sourceMap.content = JSON.parse(options.sourceMap.content);
              }
--            options.format.source_map = await SourceMap({
+-            format_options.source_map = await SourceMap({
 +            options.format.source_map = SourceMap({
                  file: options.sourceMap.filename,
                  orig: options.sourceMap.content,
@@ -27,9 +43,14 @@ index aa3f73d8..0731d838 100644
 +                }
 +            }
          }
-         delete options.format.ast;
-         delete options.format.code;
-@@ -314,21 +320,11 @@ async function minify(files, options, _fs_module) {
+-        delete format_options.ast;
+-        delete format_options.code;
+-        delete format_options.spidermonkey;
+-        var stream = OutputStream(format_options);
++        delete options.format.ast;
++        delete options.format.code;
++        delete options.format.spidermonkey;
++        var stream = OutputStream(options.format);
          toplevel.print(stream);
          result.code = stream.get();
          if (options.sourceMap) {
@@ -37,7 +58,7 @@ index aa3f73d8..0731d838 100644
 -                configurable: true,
 -                enumerable: true,
 -                get() {
--                    const map = options.format.source_map.getEncoded();
+-                    const map = format_options.source_map.getEncoded();
 -                    return (result.map = options.sourceMap.asObject ? map : JSON.stringify(map));
 -                },
 -                set(value) {
@@ -47,7 +68,7 @@ index aa3f73d8..0731d838 100644
 -                    });
 -                }
 -            });
--            result.decoded_map = options.format.source_map.getDecoded();
+-            result.decoded_map = format_options.source_map.getDecoded();
 +            if(options.sourceMap.asObject) {
 +                result.map = options.format.source_map.get().toJSON();
 +            } else {
@@ -56,12 +77,12 @@ index aa3f73d8..0731d838 100644
              if (options.sourceMap.url == "inline") {
                  var sourceMap = typeof result.map === "object" ? JSON.stringify(result.map) : result.map;
                  result.code += "\n//# sourceMappingURL=data:application/json;charset=utf-8;base64," + to_base64(sourceMap);
-@@ -343,9 +339,6 @@ async function minify(files, options, _fs_module) {
+@@ -349,9 +342,6 @@ async function minify(files, options, _fs_module) {
              options.nameCache.props = cache_to_json(options.mangle.properties.cache);
          }
      }
--    if (options.format && options.format.source_map) {
--        options.format.source_map.destroy();
+-    if (format_options && format_options.source_map) {
+-        format_options.source_map.destroy();
 -    }
      if (timings) {
          timings.end = Date.now();
@@ -140,47 +161,23 @@ index f376ccc8..4fd32e84 100644
      };
  }
  
-diff --git a/package-lock.json b/package-lock.json
-index 7afb74f3..b9ab9960 100644
---- a/package-lock.json
-+++ b/package-lock.json
-@@ -1536,28 +1536,17 @@
-       }
-     },
-     "source-map": {
--      "version": "0.8.0-beta.0",
--      "resolved": "https://registry.npmjs.org/source-map/-/source-map-0.8.0-beta.0.tgz",
--      "integrity": "sha512-2ymg6oRBpebeZi9UUNsgQ89bhx01TcTkmNTGnNO88imTmbSgy4nfujrgVEFKWpMTEGA11EDkTt7mqObTPdigIA==",
--      "dev": true,
--      "requires": {
--        "whatwg-url": "^7.0.0"
--      }
-+      "version": "0.6.1",
-+      "resolved": "https://registry.npmjs.org/source-map/-/source-map-0.6.1.tgz",
-+      "integrity": "sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g=="
-     },
-     "source-map-support": {
--      "version": "0.5.20",
--      "resolved": "https://registry.npmjs.org/source-map-support/-/source-map-support-0.5.20.tgz",
--      "integrity": "sha512-n1lZZ8Ve4ksRqizaBQgxXDgKwttHDhyfQjA6YZZn8+AroHbsIz+JjwxQDxbp+7y5OYCI8t1Yk7etjD9CRd2hIw==",
-+      "version": "0.5.13",
-+      "resolved": "https://registry.npmjs.org/source-map-support/-/source-map-support-0.5.13.tgz",
-+      "integrity": "sha512-SHSKFHadjVA5oR4PPqhtAVdcBWwRYVd6g6cAXnIbRiIwc2EhPrTuKUBdSLvlEKyIP3GCf89fltvcZiP9MMFA1w==",
-       "requires": {
-         "buffer-from": "^1.0.0",
-         "source-map": "^0.6.0"
--      },
--      "dependencies": {
--        "source-map": {
--          "version": "0.6.1",
--          "resolved": "https://registry.npmjs.org/source-map/-/source-map-0.6.1.tgz",
--          "integrity": "sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g=="
--        }
-       }
-     },
-     "spawn-sync": {
+diff --git a/main.js b/main.js
+index 0a10db5a..8eb0dc81 100644
+--- a/main.js
++++ b/main.js
+@@ -1,8 +1,8 @@
+ import "./lib/transform.js";
+ import "./lib/mozilla-ast.js";
+-import { minify } from "./lib/minify.js";
++import { minify, minifySync } from "./lib/minify.js";
+ 
+-export { minify } from "./lib/minify.js";
++export { minify, minifySync } from "./lib/minify.js";
+ export { run_cli as _run_cli } from "./lib/cli.js";
+ 
+ export async function _default_options() {
 diff --git a/package.json b/package.json
-index 0a29e443..8e1320f1 100644
+index 9c37e699..ada2196e 100644
 --- a/package.json
 +++ b/package.json
 @@ -47,7 +47,8 @@
@@ -203,51 +200,6 @@ index 0a29e443..8e1320f1 100644
    },
    "scripts": {
      "test": "node test/compress.js && mocha test/mocha",
-diff --git a/test/benchmark.cjs b/test/benchmark.cjs
-index aea0059b..45769600 100644
---- a/test/benchmark.cjs
-+++ b/test/benchmark.cjs
-@@ -4,11 +4,9 @@
- "use strict";
- 
- var createHash = require("crypto").createHash;
-+var fetch = require("./fetch");
- var fork = require("child_process").fork;
- var zlib = require("zlib");
--
--var fetch = require("./fetch.cjs");
--
- var args = process.argv.slice(2);
- if (!args.length) {
-     args.push("-mc");
-diff --git a/test/input/issue-520/output.js b/test/input/issue-520/output.js
-index 0aa3c963..f6d13804 100644
---- a/test/input/issue-520/output.js
-+++ b/test/input/issue-520/output.js
-@@ -1,2 +1,2 @@
- new function(){console.log(3)};
--//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJjb25zb2xlIiwibG9nIl0sInNvdXJjZXMiOlsic3RkaW4iXSwic291cmNlc0NvbnRlbnQiOlsiY2xhc3MgRm9vIHsgY29uc3RydWN0b3IoKXtjb25zb2xlLmxvZygxKzIpO30gfSBuZXcgRm9vKCk7XG4iXSwibWFwcGluZ3MiOiJBQUErQyxJQUFyQyxXQUFnQkEsUUFBUUMsSUFBSSJ9
-+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInN0ZGluIl0sIm5hbWVzIjpbImNvbnNvbGUiLCJsb2ciXSwibWFwcGluZ3MiOiJBQUErQyxJQUFyQyxXQUFnQkEsUUFBUUMsSUFBSSIsInNvdXJjZXNDb250ZW50IjpbImNsYXNzIEZvbyB7IGNvbnN0cnVjdG9yKCl7Y29uc29sZS5sb2coMSsyKTt9IH0gbmV3IEZvbygpO1xuIl19
-diff --git a/test/mocha/input-sourcemaps.js b/test/mocha/input-sourcemaps.js
-index e0bffb43..ccdca452 100644
---- a/test/mocha/input-sourcemaps.js
-+++ b/test/mocha/input-sourcemaps.js
-@@ -32,7 +32,7 @@ describe("input sourcemaps", function() {
-             }
-         });
- 
--        map = await new SourceMapConsumer(result.map);
-+        map = new SourceMapConsumer(result.map);
-     }
- 
-     beforeEach(async function () {
-diff --git a/test/mocha/utils.js b/test/mocha/utils.js
-index 6e2ae714..e5cd8a26 100644
---- a/test/mocha/utils.js
-+++ b/test/mocha/utils.js
-@@ -1,5 +1,3 @@
--import assert from "assert";
--
- function decodeMap(mapData) {
-     const buffer = new Buffer(mapData.replace('data:application/json;charset=utf-8;base64,', ''), 'base64');
-     return JSON.parse(buffer.toString());
+
+warning: LF will be replaced by CRLF in package.json.
+The file will have its original line endings in your working directory

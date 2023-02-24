@@ -1,8 +1,8 @@
 diff --git a/lib/minify.js b/lib/minify.js
-index aa3f73d8..1509bf33 100644
+index 725e3d96..b256907c 100644
 --- a/lib/minify.js
 +++ b/lib/minify.js
-@@ -100,6 +100,10 @@ function log_input(files, options, fs, debug_folder) {
+@@ -103,6 +103,10 @@ function log_input(files, options, fs, debug_folder) {
  }
  
  async function minify(files, options, _fs_module) {
@@ -13,7 +13,7 @@ index aa3f73d8..1509bf33 100644
      if (
          _fs_module
          && typeof process === "object"
-@@ -364,5 +368,6 @@ async function minify(files, options, _fs_module) {
+@@ -370,5 +374,6 @@ async function minify(files, options, _fs_module) {
  
  export {
    minify,
