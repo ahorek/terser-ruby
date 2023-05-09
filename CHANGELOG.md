@@ -1,4 +1,8 @@
 ## Unreleased
+## 1.1.15 (09 May 2023)
+- update TerserJS to [5.17.3]
+- add lhs_constants (default is true)
+
 ## 1.1.14 (24 February 2023)
 - update TerserJS to [5.16.5]
 - update Rubocop
