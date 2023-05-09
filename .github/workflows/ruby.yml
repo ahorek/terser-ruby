@@ -20,7 +20,7 @@ jobs:
           - { ruby: '3.0', c-o-e: false }
           - { ruby: 3.1, c-o-e: false }
           - { ruby: 3.2, c-o-e: false }
-          - { ruby: jruby-9.4.1.0, c-o-e: false }
+          - { ruby: jruby-9.4.2.0, c-o-e: false }
           - { ruby: ruby-head, c-o-e: true }
           - { ruby: jruby-head, c-o-e: true }
           - { ruby: truffleruby, c-o-e: true }
