@@ -702,6 +702,37 @@ describe "Terser" do
     end
   end
 
+  describe 'lhs_constants' do
+    let(:code) do
+      <<-JS
+        function fun(a) {
+          var x;
+          x = a == 42;
+          x = a === 42;
+          return x;
+        }
+      JS
+    end
+
+    it 'compresses with lhs_constants' do
+      compiled = Terser.compile(code, :compress => {
+                                  :evaluate => true,
+                                  :lhs_constants => true
+                                })
+      expect(compiled).to include("42==n")
+      expect(compiled).to include("42===n")
+    end
+
+    it 'can be disabled to preserve the order' do
+      compiled = Terser.compile(code, :compress => {
+                                  :evaluate => true,
+                                  :lhs_constants => false
+                                })
+      expect(compiled).to include("n==42")
+      expect(compiled).to include("n===42")
+    end
+  end
+
   describe 'quote style' do
     let(:code) do
       <<-JS

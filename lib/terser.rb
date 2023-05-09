@@ -85,6 +85,7 @@ class Terser
       :keep_fnames => false, # Do not drop names in function definitions
       :passes => 1, # Number of times to run compress. Raising the number of passes will increase compress time, but can produce slightly smaller code.
       :keep_infinity => false, # Prevent compression of Infinity to 1/0
+      :lhs_constants => true, # Moves constant values to the left-hand side of binary nodes. `foo == 42 → 42 == foo`
       :side_effects => true, # Pass false to disable potentially dropping functions marked as "pure" using pure comment annotation. See TerserJS documentation for details.
       :switches => true # de-duplicate and remove unreachable switch branches
     }, # Apply transformations to code, set to false to skip
