@@ -1,4 +1,7 @@
 ## Unreleased
+## 1.1.16 (01 June 2023)
+- update TerserJS to [5.17.7]
+
 ## 1.1.15 (09 May 2023)
 - update TerserJS to [5.17.3]
 - add lhs_constants (default is true)
