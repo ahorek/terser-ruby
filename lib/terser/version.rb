@@ -2,5 +2,5 @@
 
 class Terser
   # Current version of Terser.
-  VERSION = "1.1.17"
+  VERSION = "1.1.18"
 end
