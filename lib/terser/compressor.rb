@@ -10,7 +10,7 @@ class Terser
 
     def initialize(options = {})
       options[:comments] ||= :none
-      @options = options
+      @options = options.merge(Rails.application.config.assets.terser.to_h)
       @cache_key = -"Terser:#{::Terser::VERSION}:#{VERSION}:#{::Sprockets::DigestUtils.digest(options)}"
       @terser = ::Terser.new(@options)
     end

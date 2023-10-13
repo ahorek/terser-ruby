@@ -18,6 +18,15 @@ Rails.application.configure do
   config.assets.js_compressor = :terser
 end
 ```
+
+Passing terser options
+
+```ruby
+Rails.application.configure do
+  config.assets.terser = { compress: { drop_console: true } }
+end
+```
+
 in `config/environments/production.rb`.
 
 ## Installation
@@ -80,8 +89,8 @@ Available options and their defaults are
     :indent_start => 0,         # Starting indent level
     :width => 80,               # Specify line width when beautifier is used (only with beautifier)
     :preamble => nil,           # Preamble for the generated JS file. Can be used to insert any code or comment.
-    :wrap_iife => false         # Wrap IIFEs in parenthesis. Note: this disables the negate_iife compression option.
-    :shebang => true            # Preserve shebang (#!) in preamble (shell scripts)
+    :wrap_iife => false,        # Wrap IIFEs in parenthesis. Note: this disables the negate_iife compression option.
+    :shebang => true,           # Preserve shebang (#!) in preamble (shell scripts)
     :quote_style => 0,          # Quote style, possible values :auto (default), :single, :double, :original
     :keep_quoted_props => false # Keep quotes property names
   },
@@ -97,7 +106,7 @@ Available options and their defaults are
     :regex => nil,              # A regular expression to filter property names to be mangled
     :ignore_quoted => false,    # Only mangle unquoted property names
     :debug => false,            # Mangle names with the original name still present
-  }                             # Mangle property names, disabled by default
+  },                            # Mangle property names, disabled by default
   :compress => {
     :sequences => true,         # Allow statements to be joined by commas
     :properties => true,        # Rewrite property access using the dot notation
