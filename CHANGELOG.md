@@ -1,4 +1,8 @@
 ## Unreleased
+## 1.1.19 (19 October 2023)
+- update TerserJS to [5.22.0]
+- enable passing terser options with Rails directly
+
 ## 1.1.18 (5 September 2023)
 - update TerserJS to [5.19.4]
 
