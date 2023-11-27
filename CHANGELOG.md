@@ -1,4 +1,8 @@
 ## Unreleased
+## 1.1.20 (27 November 2023)
+- update TerserJS to [5.24.0]
+- fix mangle properties, thanks @khaitu!
+
 ## 1.1.19 (19 October 2023)
 - update TerserJS to [5.22.0]
 - enable passing terser options with Rails directly
