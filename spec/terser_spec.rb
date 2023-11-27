@@ -46,48 +46,47 @@ describe "Terser" do
     expect(Terser.new.compile('var foo="\0bar"')).to include("\\0bar")
   end
 
-  # TODO: fixme
-  #  describe "property name mangling" do
-  #    let(:source) do
-  #      <<-JS
-  #       var obj = {
-  #          _hidden: false,
-  #          "quoted": 'value'
-  #        };
-  #
-  #        alert(object.quoted);
-  #      JS
-  #    end
-  #
-  #    it "does not mangle property names by default" do
-  #      expect(Terser.compile(source)).to include("object.quoted")
-  #    end
-  #
-  #    it "can be configured to mangle properties" do
-  #      expect(Terser.compile(source, :mangle => { :properties => true }))
-  #        .not_to include("object.quoted")
-  #    end
-  #
-  #    it "can be configured using old mangle_properties" do
-  #      expect(Terser.compile(source, :mangle_properties => true))
-  #        .not_to include("object.quoted")
-  #    end
-  #
-  #    it "can configure a regex for mangling" do
-  #      expect(Terser.compile(source, :mangle => { :properties => { :regex => /^_/ } }))
-  #        .to include("object.quoted")
-  #    end
-  #
-  #    it "can be configured to keep quoted properties" do
-  #      expect(Terser.compile(source, :mangle => { :properties => { :keep_quoted => true } }))
-  #        .to include("object.quoted")
-  #    end
-  #
-  #    it "can be configured to include debug in mangled properties" do
-  #      expect(Terser.compile(source, :mangle => { :properties => { :debug => true } }))
-  #        .to include("_$quoted$_")
-  #    end
-  #  end
+  describe "property name mangling" do
+    let(:source) do
+      <<-JS
+       var obj = {
+          _hidden: false,
+          "quoted": 'value'
+        };
+
+        alert(object.quoted);
+      JS
+    end
+
+    it "does not mangle property names by default" do
+      expect(Terser.compile(source)).to include("object.quoted")
+    end
+
+    it "can be configured to mangle properties" do
+      expect(Terser.compile(source, :mangle => { :properties => true }))
+        .not_to include("object.quoted")
+    end
+
+    it "can be configured using old mangle_properties" do
+      expect(Terser.compile(source, :mangle_properties => true))
+        .not_to include("object.quoted")
+    end
+
+    it "can configure a regex for mangling" do
+      expect(Terser.compile(source, :mangle => { :properties => { :regex => /^_/ } }))
+        .to include("object.quoted")
+    end
+
+    it "can be configured to keep quoted properties" do
+      expect(Terser.compile(source, :mangle => { :properties => { :keep_quoted => true } }))
+        .to include("object.quoted")
+    end
+
+    it "can be configured to include debug in mangled properties" do
+      expect(Terser.compile(source, :mangle => { :properties => { :debug => true } }))
+        .to include("_$quoted$_")
+    end
+  end
 
   describe "argument name mangling" do
     let(:code) { "function bar(foo) {return foo + 'bar'};" }
