@@ -16,7 +16,6 @@ jobs:
       fail-fast: true
       matrix:
         include:
-          - { ruby: 2.7, c-o-e: false }
           - { ruby: '3.0', c-o-e: false }
           - { ruby: 3.1, c-o-e: false }
           - { ruby: 3.2, c-o-e: false }

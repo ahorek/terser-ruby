@@ -2,6 +2,9 @@
 ## 1.2.0 (22 January 2024)
 - update TerserJS to [5.27.0]
 - remove sourcemap patches
+- `pure_new` option added
+- EOL rubies are no longer tested
+- update rubocop
 
 ## 1.1.20 (27 November 2023)
 - update TerserJS to [5.24.0]
