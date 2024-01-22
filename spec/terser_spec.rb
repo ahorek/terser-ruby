@@ -313,6 +313,27 @@ describe "Terser" do
     end
   end
 
+  describe 'pure_new' do
+    let(:code) do
+      <<-JS
+        new function() {};
+        (new function() {
+          this.pass = () => console.log("PASS");
+        }).pass()
+      JS
+    end
+
+    it "when compress option is set" do
+      minified = Terser.compile(code, :compress => { :pure_new => true })
+      expect(minified).to match("(new function(){this.pass=()=>console.log(\"PASS\")}).pass();")
+    end
+
+    it "when compress option is false" do
+      minified = Terser.compile(code, :compress => { :pure_new => false })
+      expect(minified).to match("new function(){},(new function(){this.pass=()=>console.log(\"PASS\")}).pass();")
+    end
+  end
+
   it "can be configured to output only ASCII" do
     code = "function emoji() { return '\\ud83c\\ude01'; }"
     minified = Terser.compile(code, :output => { :ascii_only => true })
