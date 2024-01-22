@@ -54,8 +54,6 @@ namespace :terser do
 
     cd 'vendor/terser/' do
       FileUtils.rm_rf("package-lock.json")
-      `patch -p1 -i ../../patches/terser-sync.patch`
-      `patch -p1 -i ../../patches/revert-source-maps.patch`
       `npm install --no-package-lock --no-save`
     end
 

@@ -1,4 +1,8 @@
 ## Unreleased
+## 1.2.0 (22 January 2024)
+- update TerserJS to [5.27.0]
+- remove sourcemap patches
+
 ## 1.1.20 (27 November 2023)
 - update TerserJS to [5.24.0]
 - fix mangle properties, thanks @khaitu!
