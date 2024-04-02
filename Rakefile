@@ -59,9 +59,7 @@ namespace :terser do
 
     FileUtils.cp("vendor/source-map/dist/source-map.min.js", "lib/source-map.js")
 
-    # FileUtils.cp("vendor/terser/dist/bundle.min.js", "lib/terser.js")
-    minified_source = `node ./vendor/terser/bin/terser vendor/terser/dist/bundle.min.js`
-    File.write("lib/terser.js", minified_source)
+    FileUtils.cp("vendor/terser/dist/bundle.min.js", "lib/terser.js")
 
     FileUtils.cp("vendor/split/split.js", "lib/split.js")
     `patch -p1 -i patches/es5-string-split.patch`
