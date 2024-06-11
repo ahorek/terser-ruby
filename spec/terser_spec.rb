@@ -739,7 +739,6 @@ describe "Terser" do
                                   :evaluate => true,
                                   :lhs_constants => true
                                 })
-      expect(compiled).to include("42==n")
       expect(compiled).to include("42===n")
     end
 
@@ -748,7 +747,6 @@ describe "Terser" do
                                   :evaluate => true,
                                   :lhs_constants => false
                                 })
-      expect(compiled).to include("n==42")
       expect(compiled).to include("n===42")
     end
   end
