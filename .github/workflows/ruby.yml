@@ -20,7 +20,7 @@ jobs:
           - { ruby: 3.1, c-o-e: false }
           - { ruby: 3.2, c-o-e: false }
           - { ruby: 3.3, c-o-e: false }
-          - { ruby: jruby-9.4.7.0, c-o-e: false }
+          - { ruby: jruby-9.4.9.0, c-o-e: false }
           - { ruby: ruby-head, c-o-e: true }
           - { ruby: jruby-head, c-o-e: true }
           - { ruby: truffleruby, c-o-e: true }
@@ -32,8 +32,6 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby }}
-    - name: Update rubygems
-      run: gem update --system
     - name: Install dependencies
       env:
         BUNDLE_GEMFILE: ${{ matrix.gemfile || 'Gemfile' }}
