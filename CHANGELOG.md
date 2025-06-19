@@ -3,6 +3,7 @@ Behavioural changes in TerserJS are listed [here](https://github.com/terser/ters
 ## Unreleased
 ## 1.2.6 (19 June 2025)
 - update TerserJS to [5.43.1]
+- remove base64 for compatibility with Ruby 3.4
 
 ## 1.2.5 (20 January 2025)
 - update TerserJS to [5.37.0]
