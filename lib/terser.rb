@@ -2,7 +2,6 @@
 # frozen_string_literal: true
 
 require "json"
-require "base64"
 require "execjs"
 require "terser/railtie" if defined?(Rails::Railtie)
 require "terser/version"
@@ -163,7 +162,7 @@ class Terser
   def compile(source, source_map_options = @options)
     if source_map_options[:source_map]
       compiled, source_map = run_terserjs(source, true, source_map_options)
-      source_map_uri = Base64.strict_encode64(source_map)
+      source_map_uri = [source_map].pack("m0")
       source_map_mime = "application/json;charset=utf-8;base64"
       compiled + "\n//# sourceMappingURL=data:#{source_map_mime},#{source_map_uri}"
     else
@@ -506,9 +505,19 @@ class Terser
     source_map_options = options[:source_map].is_a?(Hash) ? options[:source_map] : {}
     sanitize_map_root(source_map_options.fetch(:input_source_map) do
       url = extract_source_mapping_url(source)
-      Base64.strict_decode64(url.split(",", 2)[-1]) if url && url.start_with?("data:")
+      base64_strict_decode64(url.split(",", 2)[-1]) if url && url.start_with?("data:")
     end)
   rescue ArgumentError, JSON::ParserError
     nil
+  end
+
+  if "".respond_to?(:unpack1)
+    def base64_strict_decode64(str)
+      str.unpack1("m0")
+    end
+  else
+    def base64_strict_decode64(str)
+      str.unpack("m0")[0]
+    end
   end
 end
