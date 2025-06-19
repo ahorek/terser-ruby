@@ -233,7 +233,7 @@ describe "Terser" do
       JS
     end
 
-    it 'inlines function declaration' do
+    it 'not inlining function declarations in a loop' do
       minified = Terser.compile(
         code,
         :mangle => false,
@@ -244,7 +244,8 @@ describe "Terser" do
           :unused => true
         }
       )
-      expect(minified).not_to include("indirect(")
+
+      expect(minified).to include("indirect(")
       expect(minified).not_to include("foo(")
     end
 
