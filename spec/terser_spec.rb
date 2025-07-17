@@ -468,6 +468,27 @@ describe "Terser" do
     end
   end
 
+  describe 'module' do
+    let(:code) do
+      <<-JS
+      await Promise.race([
+        Promise.allSettled([
+        ]),
+        new Promise((resolve) => setTimeout(resolve, 1250))
+      ])
+      JS
+    end
+
+    it "allows top level await when module is set" do
+      out = Terser.compile(code, :compress => true, :module => true)
+      expect(out).to include("await Promise.race([Promise.allSettled([]),new Promise(e=>setTimeout(e,1250))]);")
+    end
+
+    it "doesn't allow top level await when module is not set" do
+      expect { Terser.compile(code, :compress => true, :module => false) }.to raise_error(Terser::Error)
+    end
+  end
+
   describe 'keep_classnames' do
     let(:code) do
       <<-JS
