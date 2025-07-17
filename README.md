@@ -163,6 +163,7 @@ Available options and their defaults are
     :input_source_map => nil    # The contents of the source map describing the input
   },
   :error_context_lines => 8,    # How many context lines surrounding the error line. Env var ERROR_CONTEXT_LINES overrides this option
+  :module => false              # Use when minifying an ES6 module. "use strict" is implied and names can be mangled on the top scope
 }
 ```
 

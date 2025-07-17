@@ -101,7 +101,8 @@ class Terser
     :keep_classnames => false, # Prevents discarding or mangling of class names. Sets both compress and mangle keep_classnames to true.
     :toplevel => false,
     :source_map => false, # Generate source map
-    :error_context_lines => 8 # How many lines surrounding the error line
+    :error_context_lines => 8, # How many lines surrounding the error line
+    :module => false # Use when minifying an ES6 module. "use strict" is implied and names can be mangled on the top scope
   }
 
   EXTRA_OPTIONS = [:comments, :mangle_properties]
@@ -222,7 +223,8 @@ class Terser
       :compress => compressor_options,
       :mangle => mangle_options,
       :parse => parse_options(source_map_options),
-      :sourceMap => source_map_options(input_map, source_map_options)
+      :sourceMap => source_map_options(input_map, source_map_options),
+      :module => @options[:module] || DEFAULTS[:module]
     }
 
     parse_result(context.call("terser_wrapper", options), generate_map, options, source_map_options)
