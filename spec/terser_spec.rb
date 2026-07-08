@@ -868,6 +868,24 @@ describe "Terser" do
     end
   end
 
+  describe 'builtins_pure' do
+    let(:code) do
+      <<-JS
+        const test = Math.sin(10);
+      JS
+    end
+
+    it 'keeps pure function calls' do
+      compiled = Terser.compile(code, :compress => { :builtins_pure => false, :toplevel => true })
+      expect(compiled).to include('sin')
+    end
+
+    it 'drops pure function calls' do
+      compiled = Terser.compile(code, :compress => { :builtins_pure => true, :toplevel => true })
+      expect(compiled).not_to include('sin')
+    end
+  end
+
   describe 'context_source_lines' do
     let(:code) do
       <<-JS
