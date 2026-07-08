@@ -1,6 +1,9 @@
 Behavioural changes in TerserJS are listed [here](https://github.com/terser/terser/blob/master/CHANGELOG.md).
 
 ## Unreleased
+## 1.2.8 (08 July 2026)
+- update TerserJS to [5.49.0]
+
 ## 1.2.7 (23 March 2026)
 - added a new module option to enable minification of ES6 modules (default is false)
 - update TerserJS to [5.46.1]
