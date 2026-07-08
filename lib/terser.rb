@@ -87,7 +87,10 @@ class Terser
       :keep_infinity => false, # Prevent compression of Infinity to 1/0
       :lhs_constants => true, # Moves constant values to the left-hand side of binary nodes. `foo == 42 → 42 == foo`
       :side_effects => true, # Pass false to disable potentially dropping functions marked as "pure" using pure comment annotation. See TerserJS documentation for details.
-      :switches => true # de-duplicate and remove unreachable switch branches
+      :switches => true, # de-duplicate and remove unreachable switch branches
+      :ecma => 5, # Pass `2015` or greater to enable `compress` options that will transform ES5 code into smaller ES6+ equivalent forms.
+      :builtins_ecma => 5, # An ES version number (like `ecma`). Tells Terser which well-known functions, constants, methods and classes are available in the global object. Does nothing by itself, but is used by `builtins_pure` and `unsafe`.
+      :builtins_pure => false # Pass `true` to assume that functions matched by the `builtins_ecma` option (such as `Math.sin` or `unescape`) are pure and calls to them can be removed.
     }, # Apply transformations to code, set to false to skip
     :parse => {
       :bare_returns => false, # Allow top-level return statements.
