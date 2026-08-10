@@ -10,8 +10,6 @@ doc
 
 # bundler
 .bundle
-Gemfile.lock
-gemfiles/*.lock
 
 # jeweler generated
 pkg

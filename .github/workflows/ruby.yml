@@ -35,7 +35,9 @@ jobs:
     - name: Install dependencies
       env:
         BUNDLE_GEMFILE: ${{ matrix.gemfile || 'Gemfile' }}
-      run: bundle install
+      run: |
+        bundle config set frozen 'true'
+        bundle install
     - name: Run tests
       run: bundle exec rake
       continue-on-error: ${{ matrix.c-o-e || false }}
