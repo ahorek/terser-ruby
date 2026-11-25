@@ -1,6 +1,9 @@
 Behavioural changes in TerserJS are listed [here](https://github.com/terser/terser/blob/master/CHANGELOG.md).
 
 ## Unreleased
+## 1.2.9 (25 November 2026)
+- update TerserJS to [5.51.4]
+
 ## 1.2.8 (08 July 2026)
 - update TerserJS to [5.49.0]
 
